@@ -1,0 +1,67 @@
+﻿  pch.cpp
+  pch.cpp
+  pch.cpp
+  blend.cpp
+  light.cpp
+  normal.cpp
+  octa.cpp
+  octaedit.cpp
+  octarender.cpp
+  physics.cpp
+  pvs.cpp
+  world.cpp
+  worldio.cpp
+  client.cpp
+  server.cpp
+C:\DEV\tesseract\src\engine\server.cpp(1129,5): warning C4065: switch statement contains 'default' but no 'case' labels
+  serverbrowser.cpp
+  aa.cpp
+  bih.cpp
+  dynlight.cpp
+  grass.cpp
+  material.cpp
+  rendergl.cpp
+  renderlights.cpp
+  Generating Code...
+  Compiling...
+  rendermodel.cpp
+  renderparticles.cpp
+  rendersky.cpp
+  rendertext.cpp
+  renderva.cpp
+  shader.cpp
+  texture.cpp
+  ui.cpp
+  water.cpp
+  command.cpp
+  console.cpp
+  main.cpp
+  menus.cpp
+  movie.cpp
+  sound.cpp
+  stain.cpp
+  Generating Code...
+  crypto.cpp
+  geom.cpp
+  glemu.cpp
+  stream.cpp
+  tools.cpp
+  zip.cpp
+  Generating Code...
+  ai.cpp
+C:\DEV\tesseract\src\game\ai.cpp(420,9): warning C4060: switch statement contains no 'case' or 'default' labels
+C:\DEV\tesseract\src\game\ai.cpp(586,17): warning C4060: switch statement contains no 'case' or 'default' labels
+  entities.cpp
+  game.cpp
+  render.cpp
+  scoreboard.cpp
+  waypoint.cpp
+  weapon.cpp
+C:\DEV\tesseract\src\game\weapon.cpp(753,13): warning C4065: switch statement contains 'default' but no 'case' labels
+  Generating Code...
+  client.cpp
+  server.cpp
+C:\DEV\tesseract\src\game\server.cpp(857,9): warning C4060: switch statement contains no 'case' or 'default' labels
+C:\DEV\tesseract\src\game\server.cpp(867,9): warning C4065: switch statement contains 'default' but no 'case' labels
+     Creating library ..\..\bin\tesseract_debug.lib and object ..\..\bin\tesseract_debug.exp
+  tesseract.vcxproj -> C:\DEV\tesseract\bin\tesseract_debug.exe

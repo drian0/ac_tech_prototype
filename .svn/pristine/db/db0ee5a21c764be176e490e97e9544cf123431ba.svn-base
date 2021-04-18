@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# TESS_OPTIONS contains any command line options you would like to start Tesseract with.
+TESS_OPTIONS=""
+
+# TESS_HOME is where Sauerbraten should store user files.
+TESS_HOME="${HOME}/Library/Application Support/Tesseract"
+TESS_APPDIR=$(dirname "$0")
+
+cd "${TESS_APPDIR}"
+
+if [ -e "../Resources/config/default.cfg" ]; then
+    cd "../Resources" # we are an app package
+    TESS_BIN="../MacOS"
+elif [ -e "../../../config/default.cfg" ]; then
+    cd "../../.." # we are being run in place
+    TESS_BIN="./tesseract.app/Contents/MacOS"
+else
+    TESS_BIN="."
+fi
+
+exec ${TESS_BIN}/tesseract_universal ${TESS_OPTIONS} -u"${TESS_HOME}" -glog.txt $@
