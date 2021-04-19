@@ -579,6 +579,7 @@ namespace game
 
         if(!m_mp(gamemode)) spawnplayer(player1);
         else findplayerspawn(player1, -1, m_teammode ? player1->team : 0);
+
         entities::resetspawns();
         copystring(clientmap, name ? name : "");
 

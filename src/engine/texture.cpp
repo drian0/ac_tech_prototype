@@ -2384,6 +2384,7 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
     st.type = tnum;
     copystring(st.name, name);
     path(st.name);
+
     if(tnum==TEX_DIFFUSE)
     {
         setslotshader(s);
@@ -2439,6 +2440,13 @@ void texscale(float *scale)
     Slot &s = *defslot;
     s.variants->scale = *scale <= 0 ? 1 : *scale;
     propagatevslot(s.variants, 1<<VSLOT_SCALE);
+    
+    /*loopv(slots)
+    {
+        Slot& s = *slots[i];
+        s.variants->scale = *scale <= 0 ? 1 : *scale;
+        propagatevslot(s.variants, 1 << VSLOT_SCALE);
+    }*/
 }
 COMMAND(texscale, "f");
 
