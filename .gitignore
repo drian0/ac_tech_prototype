@@ -1,0 +1,10 @@
+src/vcpp/**/*.obj
+src/vcpp/**/*.pch
+src/vcpp/**/*.vcxproj.user
+src/vcpp/.vs/
+src/vcpp/Master/
+src/vcpp/Debug/
+src/vcpp/Debug64/
+src/vcpp/Release/
+src/vcpp/Standalone Debug/
+src/vcpp/Standalone/

@@ -385,7 +385,9 @@ namespace entities
         {
             "none?", "light", "mapmodel", "playerstart", "envmap", "particles", "sound", "spotlight", "decal",
             "teleport", "teledest", "jumppad",
-            "flag"
+            "flag", 
+            "unknown", "unknown", "unknown", "unknown", "unknown", "unknown",
+            "clips", "ammo", "grenade", "health", "helmet", "armour", "akimbo", "ladder", "ctfflag"
         };
         return i>=0 && size_t(i)<sizeof(entnames)/sizeof(entnames[0]) ? entnames[i] : "";
     }
