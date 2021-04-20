@@ -33,6 +33,9 @@ struct cubeloader
     #define LARGEST_FACTOR 11               // 10 is already insane
     #define MAXENTITIES 65535
     #define MAXHEADEREXTRA (1<<20)
+    #define SWS(w,x,y,s) (&(w)[((y)<<(s))+(x)])
+    #define SW(w,x,y) SWS(w,x,y,sfactor)
+    #define S(x,y) SW(world,x,y) 
 
     struct c_sqr
     {
@@ -60,6 +63,24 @@ struct cubeloader
         unsigned char attr7;
     };
 
+    enum                            // static entity types
+    {
+        C_NOTUSED = 0,                // entity slot not in use in map (usually seen at deleted entities)
+        C_LIGHT,                      // lightsource, attr1 = radius, attr2 = intensity (or attr2..4 = r-g-b)
+        C_PLAYERSTART,                // attr1 = angle, attr2 = team
+        C_I_CLIPS, C_I_AMMO, C_I_GRENADE, // attr1 = elevation
+        C_I_HEALTH, C_I_HELMET, C_I_ARMOUR, C_I_AKIMBO,
+        C_MAPMODEL,                   // attr1 = angle, attr2 = idx, attr3 = elevation, attr4 = texture, attr5 = pitch, attr6 = roll
+        C_CARROT,                     // attr1 = tag, attr2 = type
+        C_LADDER,                     // attr1 = height
+        C_CTF_FLAG,                   // attr1 = angle, attr2 = red/blue
+        C_SOUND,                      // attr1 = idx, attr2 = radius, attr3 = size, attr4 = volume
+        C_CLIP,                       // attr1 = elevation, attr2 = xradius, attr3 = yradius, attr4 = height, attr6 = slope, attr7 = shape
+        C_PLCLIP,                     // attr1 = elevation, attr2 = xradius, attr3 = yradius, attr4 = height, attr6 = slope, attr7 = shape
+        C_DUMMYENT,                   // temporary entity without any function - will not be saved to map files, used to mark positions and for scripting
+        C_MAXENTTYPES
+    };
+
     struct c_header                   // map file format header
     {
         char head[4];               // "CUBE"
@@ -78,27 +99,100 @@ struct cubeloader
         int reserved[10];
     };
 
+    struct acmapmodel
+    {
+        int r, h, z;
+        char* name;
+    };
+
     c_sqr *world;
     int ssize;
+    int sfactor;
     int x0, x1, y0, y1, z0, z1;
     c_sqr *o[4];
     int lastremip;
     int progress;
+    vector<acmapmodel> acmapmodels;
+
+    // act as if you did not see this
+    char* replace(
+        char const* const original,
+        char const* const pattern,
+        char const* const replacement) {
+        size_t const replen = strlen(replacement);
+        size_t const patlen = strlen(pattern);
+        size_t const orilen = strlen(original);
+
+        size_t patcnt = 0;
+        const char* oriptr;
+        const char* patloc;
+
+        // find how many times the pattern occurs in the original string
+        for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+        {
+            patcnt++;
+        }
+
+        {
+            // allocate memory for the new string
+            size_t const retlen = orilen + patcnt * (replen - patlen);
+            char* const returned = (char*)malloc(sizeof(char) * (retlen + 1));
+
+            if (returned != NULL)
+            {
+                // copy the original string, 
+                // replacing all the instances of the pattern
+                char* retptr = returned;
+                for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+                {
+                    size_t const skplen = patloc - oriptr;
+                    // copy the section until the occurence of the pattern
+                    strncpy(retptr, oriptr, skplen);
+                    retptr += skplen;
+                    // copy the replacement 
+                    strncpy(retptr, replacement, replen);
+                    retptr += replen;
+                }
+                // copy the rest of the string.
+                strcpy(retptr, oriptr);
+            }
+            return returned;
+        }
+    }
+
+    void ac_mapmodel(int* r, int* h, int* z, int* dummy, char* name)
+    {
+        acmapmodel mdl;
+        mdl.r = *r;
+        mdl.h = *h;
+        mdl.z = *z;
+        mdl.name = newstring(name);
+        acmapmodels.add(mdl);
+    }
 
     void create_ent(c_persistent_entity &ce)
     {
-        if(ce.type>=7) ce.type++;  // grenade ammo
-        if(ce.type>=8) ce.type++;  // pistol ammo
-        if(ce.type==16) ce.type = ET_MAPMODEL;
-        else if(ce.type>=ET_MAPMODEL && ce.type<16) ce.type++;
-        if(ce.type>=ET_ENVMAP) ce.type++;
-        if(ce.type>=ET_PARTICLES) ce.type++; 
-        if(ce.type>=ET_SOUND) ce.type++;
-        if(ce.type>=ET_SPOTLIGHT) ce.type++;
-        extentity &e = *entities::newentity();
+        extentity& e = *entities::newentity();
         entities::getents().add(&e);
-        e.type = ce.type;
-        e.o = vec(ce.x*4+worldsize/4, ce.y*4+worldsize/4, ce.z*4+worldsize/2);
+        switch(ce.type)
+        {
+            case C_LIGHT: e.type = ET_LIGHT; break;
+            case C_PLAYERSTART: e.type = ET_PLAYERSTART; break;
+            case C_I_CLIPS: e.type = ET_AC_CLIPS; break;
+            case C_I_AMMO: e.type = ET_AC_AMMO; break;
+            case C_I_GRENADE: e.type = ET_AC_GRENADE; break;
+            case C_I_HEALTH: e.type = ET_AC_HEALTH; break;
+            case C_I_HELMET: e.type = ET_AC_HELMET; break;
+            case C_I_ARMOUR: e.type = ET_AC_ARMOUR; break;
+            case C_I_AKIMBO: e.type = ET_AC_AKIMBO; break;
+            case C_MAPMODEL: e.type = ET_MAPMODEL; break;
+            case C_LADDER: e.type = ET_AC_LADDER; break;
+            case C_CTF_FLAG: e.type = ET_AC_CTFFLAG; break;
+            case C_SOUND: e.type = ET_SOUND; break;
+            default: return; // clips are not supported by the importer
+        }
+        e.o = vec(ce.x * 4 + worldsize / 4, ce.y * 4 + worldsize / 4, ce.z * 4 + worldsize / 2);
+
   // fixmeah
         //      e.light.color = vec(1, 1, 1);
   //      e.light.dir = vec(0, 0, 1);
@@ -107,8 +201,14 @@ struct cubeloader
         switch(e.type)
         {
             case ET_MAPMODEL:
-                e.o.z += ce.attr3*4;
-                e.attr3 = e.attr4 = 0;
+                e.o.z = (float)(S(ce.x, ce.y)->floor + ce.attr3/5) * 4 + worldsize / 2; // elevation
+                //e.o.z += ce.attr3 * 4 / 5;
+                e.attr1 = ce.attr2; // idx
+                e.attr2 = ((ce.attr1 / 10) + 270) % 360; // yaw
+                e.attr3 = ce.attr5 / 10; // pitch
+                e.attr4 = ce.attr6; // roll
+                e.attr5 = 25; // scale
+                // todo: texture
                 break;
             case ET_LIGHT:
                 e.attr1 *= 4;
@@ -123,12 +223,12 @@ struct cubeloader
         {
             case ET_PLAYERSTART:
             case ET_MAPMODEL:
-            case ET_GAMESPECIFIC+12: // teleport
-            case ET_GAMESPECIFIC+13: // monster
-                e.attr1 = (int(e.attr1)+180)%360;
+                //e.attr5 = 2;
+                //e.attr1 = (int(e.attr1)+180)%360;
                 break;
+            
         }
-        e.attr5 = 0;
+        e.attr5 = 25;
     }
 
     cube &getcube(int x, int y, int z)
@@ -403,37 +503,45 @@ struct cubeloader
         return !f.overread();  // true: no problem
     }
 
-    void parseheaderextra(char *cfgname)  // parse all headerextra packets, delete the nonpersistent ones (like editundos)
+    void processheaderextra(char *cfgname)
     {
-        bool clearnonpersist = true;
-        int ignoretypes = 0;
-
         loopv(headerextras)
         {
             ucharbuf q(headerextras[i]->data, headerextras[i]->len);
             int type = headerextras[i]->flags & HX_TYPEMASK;
             bool deletethis = false;                               // (set deletethis for headers that persist outside headerextras and get reinserted by packheaderextras())
-            if (!(ignoretypes & (1 << type))) switch (type)
+            switch (type)
             {
             case HX_EDITUNDO:
                 break;
 
             case HX_CONFIG:
             {
-                if (headerextras[i]->len > 0 && headerextras[i]->data[headerextras[i]->len - 1] == '\0') execute((const char*)q.buf); // needs to have '\0' at the end, better check...
-                else conoutf("\f3malformed embedded config");
-                
-                stream* f = openutf8file(path(cfgname, true), "w");
-                if(f)
+                // AC format 10 has its whole config inside the header
+                if (headerextras[i]->len <= 0 || headerextras[i]->data[headerextras[i]->len - 1] != '\0') // needs to have '\0' at the end, better check...
                 {
-                    f->write(q.buf, headerextras[i]->len);
+                    conoutf("\f3malformed embedded config");
+                    break;
+                }
+
+                // the 'mapmodel' command from AC differs to the 'mapmodel' command from cube2
+                // therefore replace it so that we can provide backward compatibility, then execute the config
+                char *cfg = replace((const char*)q  .buf, "mapmodel ", "ac_mapmodel ");
+                cfg = replace(cfg, "resetmapmodel", "");
+                acmapmodels.setsize(0);
+                execute((const char*)cfg);
+                
+                // now save the config to .cfg file and inject the new 'mapmodel' command
+                cfg = replace(cfg, "ac_mapmodel ", "");
+                stream* f = openutf8file(path(cfgname, true), "w");
+                if (f) 
+                { 
+                    f->write(cfg, strlen(cfg));
+                    f->printf("mapmodelreset\n");
+                    loopv(acmapmodels) f->printf("mapmodel \"%s\"\n", acmapmodels[i].name);
                     delete f;
                 }
-                else
-                {
-                    conoutf("\f3could not write .cfg file");
-                }
-                
+                else conoutf("\f3could not write .cfg file");
                 break;
             }
 
@@ -451,7 +559,7 @@ struct cubeloader
             default:
                 break;
             }
-            if (deletethis || (clearnonpersist && !(headerextras[i]->flags & HX_FLAG_PERSIST))) delete headerextras.remove(i--);
+
         }
     }
 
@@ -474,6 +582,7 @@ struct cubeloader
         lilswap(&tmp.version, 4); // version, headersize, sfactor, numents
         if (tmp.version != 10) { conoutf("\f3the map must comply to map format 10 (AssaultCube v1.3), please upgrade your map before importing"); delete f; return; }
         if (tmp.sfactor<SMALLEST_FACTOR || tmp.sfactor>LARGEST_FACTOR || tmp.numents > MAXENTITIES) { conoutf("\f3illegal map size"); delete f; return; }
+        sfactor = tmp.sfactor;
         tmp.headersize = fixmapheadersize(tmp.version, tmp.headersize);
         int restofhead = min(tmp.headersize, sizeof_header) - sizeof_baseheader;
         if (f->read(&tmp.waterlevel, restofhead) != restofhead) { conoutf("\f3while reading map: header malformatted (2)"); delete f; return; }
@@ -501,8 +610,19 @@ struct cubeloader
         defformatstring(cs, "importing %s", cgzname);
         renderbackground(cs);
 
+        string cfgname;
+        formatstring(cfgname, "media/map/%s_imported.cfg", mname);
+        processheaderextra(cfgname);
+
         c_header hdr = tmp;
-        f->seek(hdr.numents*sizeof(c_persistent_entity), SEEK_CUR);
+        vector<c_persistent_entity> cents;
+        loopi(hdr.numents)
+        {
+            c_persistent_entity e;
+            f->read(&e, sizeof(c_persistent_entity));
+            lilswap(&e.x, 4);
+            if (i < MAXENTS) cents.add(e);
+        }
 
         ssize = 1<<hdr.sfactor;
         int mipsize = ssize * ssize;
@@ -523,31 +643,43 @@ struct cubeloader
         ucharbuf uf(rawcubes.getbuf(), rawcubes.length());
         bool success = rldecodecubes(uf, world, cubicsize, hdr.version, false, cubicsize);
 
-        string cfgname;
-        formatstring(cfgname, "media/map/%s_imported.cfg", mname);
-        parseheaderextra(cfgname);
+        loopv(cents) create_ent(cents[i]);
 
         identflags &= ~IDF_OVERRIDDEN;
         create_cubes();
         mpremip(true);
         clearlights();
         allchanged();
-        vector<extentity *> &ents = entities::getents();
-        loopv(ents) if(ents[i]->type!=ET_LIGHT) dropenttofloor(ents[i]);
+        //vector<extentity *> &ents = entities::getents();
+        //loopv(ents) if(ents[i]->type!=ET_LIGHT) dropenttofloor(ents[i]);
         entitiesinoctanodes();
-        conoutf("read cube map %s (%.1f seconds)", cgzname, (SDL_GetTicks()-loadingstart)/1000.0f);
-        startmap(NULL);
+        conoutf("read assaultcube map %s (%.1f seconds)", cgzname, (SDL_GetTicks()-loadingstart)/1000.0f);
+        //startmap(NULL);
 
         string newmapname;
         formatstring(newmapname, "%s_imported", mname);
         save_world(newmapname);
+        startmap(newmapname);
     }
 };
+
+cubeloader* currentcubeloader = NULL;
+
+void ac_mapmodel(int* r, int* h, int* z, int* dummy, char* name)
+{
+    if(!currentcubeloader) return;
+    currentcubeloader->ac_mapmodel(r, h, z, dummy, name);
+}
+
+COMMAND(ac_mapmodel, "iiiis");
 
 void importassaultcube(char *name, int *size)
 { 
     if(multiplayer()) return;
-    cubeloader().load_assaultcube_world(name, *size);
+    currentcubeloader = new cubeloader();
+    currentcubeloader->load_assaultcube_world(name, *size);
+    delete currentcubeloader;
+    currentcubeloader = NULL;
 }
 
 COMMAND(importassaultcube, "si");
