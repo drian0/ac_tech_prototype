@@ -2263,7 +2263,7 @@ namespace server
         servstate &gs = ci->state;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT:
+            case ATK_CARBINE:
                 if(!gs.projs.remove(id)) return;
                 break;
 
@@ -2308,7 +2308,7 @@ namespace server
         gs.shotdamage += attacks[atk].damage*attacks[atk].rays;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT: gs.projs.add(id); break;
+            case ATK_CARBINE: gs.projs.add(id); break;
             default:
             {
                 int totalrays = 0, maxrays = attacks[atk].rays;

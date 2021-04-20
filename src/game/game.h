@@ -94,9 +94,9 @@ struct gameentity : extentity
 {
 };
 
-enum { GUN_RAIL = 0, GUN_PULSE, NUMGUNS };
+enum { GUN_KNIFE = 0, GUN_PISTOL, GUN_CARBINE, GUN_SHOTGUN, GUN_SUBGUN, GUN_SNIPER, GUN_ASSAULT, GUN_GRENADE, GUN_AKIMBO, NUMGUNS };
 enum { ACT_IDLE = 0, ACT_SHOOT, ACT_MELEE, NUMACTS };
-enum { ATK_RAIL_SHOOT = 0, ATK_RAIL_MELEE, ATK_PULSE_SHOOT, ATK_PULSE_MELEE, NUMATKS };
+enum { ATK_KNIFE = 0, ATK_PISTOL, ATK_CARBINE, ATK_SHOTGUN, ATK_SUBGUN, ATK_SNIPER, ATK_ASSAULT, ATK_GRENADE, ATK_AKIMBO, NUMATKS };
 
 #define validgun(n) ((n) >= 0 && (n) < NUMGUNS)
 #define validact(n) ((n) >= 0 && (n) < NUMACTS)
@@ -164,7 +164,28 @@ enum
     S_JUMP = 0, S_LAND,
     S_SPLASHIN, S_SPLASHOUT, S_BURN,
     S_ITEMSPAWN, S_TELEPORT, S_JUMPPAD,
-    S_MELEE, S_PULSE1, S_PULSE2, S_PULSEEXPLODE, S_RAIL1, S_RAIL2,
+    
+    S_KNIFE,
+    S_PISTOL,
+    S_RPISTOL,
+    S_CARBINE,
+    S_RCARBINE,
+    S_SHOTGUN,
+    S_RSHOTGUN,
+    S_SUBGUN,
+    S_RSUBGUN,
+    S_SNIPER,
+    S_RSNIPER,
+    S_ASSAULT,
+    S_RASSAULT,
+
+    S_GRENADEPULL,
+    S_GRENADETHROW,
+    S_GRENADEBOUNCE1,
+    S_GRENADEBOUNCE2,
+    S_FEXPLODE,
+    S_RAKIMBO,
+
     S_WEAPLOAD, S_NOAMMO, S_HIT,
     S_PAIN1, S_PAIN2, S_DIE1, S_DIE2,
 
@@ -279,16 +300,28 @@ static struct itemstat { int add, max, sound; const char *name; int icon, info; 
 
 static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[NUMATKS] =
 {
-    { GUN_RAIL,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_RAIL1,  S_RAIL2, 1300, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_RAIL,  ACT_MELEE, ANIM_MELEE, ANIM_VWEP_MELEE, ANIM_GUN_MELEE, S_MELEE,  S_MELEE,  500, 1, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 },
-    { GUN_PULSE, ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PULSE1, S_PULSE2, 700, 1, 0, 1, 1000, 30, 1024, 1, 5000, 15, 0, 0 },
-    { GUN_PULSE, ACT_MELEE, ANIM_MELEE, ANIM_VWEP_MELEE, ANIM_GUN_MELEE, S_MELEE,  S_MELEE,  500, 1, 0, 2,    0,  0,   14, 1,    0,  0, 0, 0 }
+    { GUN_KNIFE, ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_KNIFE, S_KNIFE, 700, 1, 0, 1, 1000, 30, 1024, 1, 5000, 15, 0, 0 },
+    { GUN_PISTOL,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_CARBINE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_CARBINE,  S_CARBINE, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_SHOTGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SHOTGUN,  S_SHOTGUN, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_SUBGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SUBGUN,  S_SUBGUN, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_SNIPER,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SNIPER,  S_SNIPER, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_ASSAULT,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_ASSAULT,  S_ASSAULT, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_GRENADE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_GRENADEPULL,  S_GRENADEPULL, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_AKIMBO,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
 };
 
 static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACTS]; } guns[NUMGUNS] =
 {
-    { "railgun", "railgun", "worldgun/railgun", { -1, ATK_RAIL_SHOOT, ATK_RAIL_MELEE }, },
-    { "pulse rifle", "pulserifle", "worldgun/pulserifle", { -1, ATK_PULSE_SHOOT, ATK_PULSE_MELEE } }
+    { "knife", "knife", "worldgun/railgun", { -1, ATK_KNIFE }, },
+    { "pistol", "pistol", "worldgun/railgun", { -1, ATK_PISTOL }, },
+    { "carbine", "carbine", "worldgun/railgun", { -1, ATK_CARBINE }, },
+    { "shotgun", "shotgun", "worldgun/railgun", { -1, ATK_SHOTGUN }, },
+    { "subgun", "subgun", "worldgun/railgun", { -1, ATK_SUBGUN }, },
+    { "sniper", "sniper", "worldgun/railgun", { -1, ATK_SNIPER }, },
+    { "assault", "assault", "worldgun/railgun", { -1, ATK_ASSAULT }, },
+    { "grenade", "grenade", "worldgun/railgun", { -1, ATK_GRENADE }, },
+    { "akimbo", "akimbo", "worldgun/railgun", { -1, ATK_AKIMBO }, },
 };
 
 #include "ai.h"
@@ -315,7 +348,7 @@ struct gamestate
     void respawn()
     {
         health = maxhealth;
-        gunselect = GUN_RAIL;
+        gunselect = GUN_ASSAULT;
         gunwait = 0;
         loopi(NUMGUNS) ammo[i] = 0;
     }
@@ -324,17 +357,17 @@ struct gamestate
     {
         if(m_rail)
         {
-            gunselect = GUN_RAIL;
-            ammo[GUN_RAIL] = 1;
+            gunselect = GUN_ASSAULT;
+            ammo[GUN_ASSAULT] = 1;
         }
         else if(m_pulse)
         {
-            gunselect = GUN_PULSE;
-            ammo[GUN_PULSE] = 1;
+            gunselect = GUN_PISTOL;
+            ammo[GUN_PISTOL] = 1;
         }
         else if(m_edit)
         {
-            gunselect = GUN_RAIL;
+            gunselect = GUN_ASSAULT;
             loopi(NUMGUNS) ammo[i] = 1;
         }
     }

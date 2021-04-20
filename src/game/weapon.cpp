@@ -94,8 +94,8 @@ namespace game
     {
         if(d->state!=CS_ALIVE) return;
         int s = d->gunselect;
-        if(s!=GUN_PULSE && d->ammo[GUN_PULSE])     s = GUN_PULSE;
-        else if(s!=GUN_RAIL && d->ammo[GUN_RAIL])  s = GUN_RAIL;
+        if(s!=GUN_PISTOL && d->ammo[GUN_PISTOL])     s = GUN_PISTOL;
+        else if(s!=GUN_ASSAULT && d->ammo[GUN_ASSAULT])  s = GUN_ASSAULT;
         gunselect(s, d);
     }
 
@@ -370,7 +370,7 @@ namespace game
     void explode(bool local, gameent *owner, const vec &v, const vec &vel, dynent *safe, int damage, int atk)
     {
         particle_splash(PART_SPARK, 200, 300, v, 0x50CFE5, 0.45f);
-        playsound(S_PULSEEXPLODE, &v);
+        playsound(S_FEXPLODE, &v);
         particle_fireball(v, 1.15f*attacks[atk].exprad, PART_PULSE_BURST, int(attacks[atk].exprad*20), 0x50CFE5, 4.0f);
         vec debrisorigin = vec(v).sub(vec(vel).mul(5));
         adddynlight(safe ? v : debrisorigin, 2*attacks[atk].exprad, vec(1.0f, 3.0f, 4.0f), 350, 40, 0, attacks[atk].exprad/2, vec(0.5f, 1.5f, 2.0f));
@@ -412,7 +412,7 @@ namespace game
         if(local) return;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT:
+            case ATK_CARBINE:
                 loopv(projs)
                 {
                     projectile &p = projs[i];
@@ -519,13 +519,13 @@ namespace game
         int gun = attacks[atk].gun;
         switch(atk)
         {
-            case ATK_PULSE_SHOOT:
+            case ATK_CARBINE:
                 if(d->muzzle.x >= 0)
                     particle_flare(d->muzzle, d->muzzle, 140, PART_PULSE_MUZZLE_FLASH, 0x50CFE5, 3.50f, d);
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;
 
-            case ATK_RAIL_SHOOT:
+            case ATK_KNIFE:
                 particle_splash(PART_SPARK, 200, 250, to, 0x50CFE5, 0.45f);
                 particle_flare(hudgunorigin(gun, from, to, d), to, 500, PART_RAIL_TRAIL, 0x50CFE5, 0.5f);
                 if(d->muzzle.x >= 0)
@@ -702,7 +702,7 @@ namespace game
         loopv(projs)
         {
             projectile &p = projs[i];
-            if(p.atk!=ATK_PULSE_SHOOT) continue;
+            if(p.atk!=ATK_CARBINE) continue;
             vec pos(p.o);
             pos.add(vec(p.offset).mul(p.offsetmillis/float(OFFSETMILLIS)));
             adddynlight(pos, 20, vec(0.25f, 0.75f, 1.0f));

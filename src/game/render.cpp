@@ -425,6 +425,16 @@ namespace game
         sway.add(swaydir).add(d->o);
         if(!hudgunsway) sway = d->o;
 
+        // fixme: make the hudgun position look 100% like ac v1
+        vec aimdirection;
+        float dist = worldpos.dist(d->o, aimdirection);
+        aimdirection.div(dist);
+        sway.x += aimdirection.x * 10.0f;
+        sway.y += aimdirection.y * 10.0f;
+        sway.z += aimdirection.z * 10.0f;
+        float yaw = d->yaw + 180.0;
+        float pitch = -d->pitch;
+
         const playermodelinfo &mdl = getplayermodelinfo(d);
         int team = m_teammode && validteam(d->team) ? d->team : 0,
             color = getplayercolor(d, team);
@@ -432,7 +442,8 @@ namespace game
         modelattach a[2];
         d->muzzle = vec(-1, -1, -1);
         a[0] = modelattach("tag_muzzle", &d->muzzle);
-        rendermodel(gunname, anim, sway, d->yaw, d->pitch, 0, MDL_NOBATCH, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
+        //rendermodel(gunname, anim, sway, d->yaw+180, -d->pitch, 0, MDL_NOBATCH, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
+        rendermodel(gunname, anim, sway, yaw, pitch, 0, MDL_NOBATCH, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
         if(d->muzzle.x >= 0) d->muzzle = calcavatarpos(d->muzzle, 12);
     }
 
@@ -471,7 +482,7 @@ namespace game
               zrad = height/2;
         vec2 xyrad = vec2(previewent->xradius, previewent->yradius).max(height/4);
         previewent->o = calcmodelpreviewpos(vec(xyrad, zrad), previewent->yaw).addz(previewent->eyeheight - zrad);
-        previewent->gunselect = validgun(weap) ? weap : GUN_RAIL;
+        previewent->gunselect = validgun(weap) ? weap : GUN_ASSAULT;
         const playermodelinfo *mdlinfo = getplayermodelinfo(model);
         if(!mdlinfo) return;
         renderplayer(previewent, *mdlinfo, getplayercolor(team, color), team, 1, 0, false);
