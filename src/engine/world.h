@@ -47,7 +47,7 @@ enum
     MATSURF_EDIT_ONLY
 };
 
-#define TEX_SCALE 8.0f // FIXMEAH 16.0
+#define TEX_SCALE 16.0
 
 struct vertex { vec pos; bvec4 norm; vec tc; bvec4 tangent; };
 

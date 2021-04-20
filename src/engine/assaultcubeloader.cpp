@@ -105,6 +105,12 @@ struct cubeloader
         char* name;
     };
 
+    struct actexture
+    {
+        int scale;
+        char* name;
+    };
+
     c_sqr *world;
     int ssize;
     int sfactor;
@@ -113,6 +119,7 @@ struct cubeloader
     int lastremip;
     int progress;
     vector<acmapmodel> acmapmodels;
+    vector<actexture> actextures;
 
     // act as if you did not see this
     char* replace(
@@ -158,6 +165,14 @@ struct cubeloader
             }
             return returned;
         }
+    }
+
+    void ac_texture(int* scale, char* name)
+    {
+        actexture mdl;
+        mdl.scale = *scale;
+        mdl.name = newstring(name);
+        actextures.add(mdl);
     }
 
     void ac_mapmodel(int* r, int* h, int* z, int* dummy, char* name)
@@ -524,21 +539,35 @@ struct cubeloader
                     break;
                 }
 
-                // the 'mapmodel' command from AC differs to the 'mapmodel' command from cube2
-                // therefore replace it so that we can provide backward compatibility, then execute the config
-                char *cfg = replace((const char*)q  .buf, "mapmodel ", "ac_mapmodel ");
+                // the mapmodel and texture commands from AC differs to cube2
+                // therefore replace it so that we can provide backward compatibility
+                char* cfg = replace((const char*)q.buf, "mapmodel ", "ac_mapmodel ");
                 cfg = replace(cfg, "resetmapmodel", "");
                 acmapmodels.setsize(0);
-                execute((const char*)cfg);
+                cfg = replace(cfg, "texture ", "ac_texture ");
+                cfg = replace(cfg, "texturereset", "");
+                actextures.setsize(0);
+
+                // execute the config with backward compatibility in place
+                execute(cfg);
                 
-                // now save the config to .cfg file and inject the new 'mapmodel' command
+                // now remove the backward compatibility code from the script and save it
                 cfg = replace(cfg, "ac_mapmodel ", "");
+                cfg = replace(cfg, "ac_texture ", "");
                 stream* f = openutf8file(path(cfgname, true), "w");
-                if (f) 
+                if(f) 
                 { 
                     f->write(cfg, strlen(cfg));
+
+                    // apply new syntax for mapmodels and textures to config
                     f->printf("mapmodelreset\n");
                     loopv(acmapmodels) f->printf("mapmodel \"%s\"\n", acmapmodels[i].name);
+                    f->printf("texturereset\n");
+                    loopv(actextures)
+                    {
+                        float newscale = 2.0f / (actextures[i].scale > 0 ? actextures[i].scale : 1);
+                        f->printf("texture 0 \"%s\"; texscale %.1f\n", actextures[i].name, newscale);
+                    }
                     delete f;
                 }
                 else conoutf("\f3could not write .cfg file");
@@ -665,9 +694,17 @@ struct cubeloader
 
 cubeloader* currentcubeloader = NULL;
 
-void ac_mapmodel(int* r, int* h, int* z, int* dummy, char* name)
+void ac_texture(int* scale, char* name)
 {
     if(!currentcubeloader) return;
+    currentcubeloader->ac_texture(scale, name);
+}
+
+COMMAND(ac_texture, "is");
+
+void ac_mapmodel(int* r, int* h, int* z, int* dummy, char* name)
+{
+    if (!currentcubeloader) return;
     currentcubeloader->ac_mapmodel(r, h, z, dummy, name);
 }
 
