@@ -2,6 +2,7 @@
 // supports importing maps in format 10 from AssaultCube v1.3 
 
 #include "engine.h"
+#include "game.h"
 
 VAR(importcuberemip, 0, 1024, 2048);
 
@@ -191,26 +192,26 @@ struct cubeloader
         entities::getents().add(&e);
         switch(ce.type)
         {
-            case C_LIGHT: e.type = ET_LIGHT; break;
-            case C_PLAYERSTART: e.type = ET_PLAYERSTART; break;
-            case C_I_CLIPS: e.type = ET_AC_CLIPS; break;
-            case C_I_AMMO: e.type = ET_AC_AMMO; break;
-            case C_I_GRENADE: e.type = ET_AC_GRENADE; break;
-            case C_I_HEALTH: e.type = ET_AC_HEALTH; break;
-            case C_I_HELMET: e.type = ET_AC_HELMET; break;
-            case C_I_ARMOUR: e.type = ET_AC_ARMOUR; break;
-            case C_I_AKIMBO: e.type = ET_AC_AKIMBO; break;
-            case C_MAPMODEL: e.type = ET_MAPMODEL; break;
-            case C_LADDER: e.type = ET_AC_LADDER; break;
-            case C_CTF_FLAG: e.type = ET_AC_CTFFLAG; break;
-            case C_SOUND: e.type = ET_SOUND; break;
+            case C_LIGHT: e.type = LIGHT; break;
+            case C_PLAYERSTART: e.type = PLAYERSTART; break;
+            case C_I_CLIPS: e.type = CLIPS; break;
+            case C_I_AMMO: e.type = AMMO; break;
+            case C_I_GRENADE: e.type = GRENADE; break;
+            case C_I_HEALTH: e.type = HEALTH; break;
+            case C_I_HELMET: e.type = HELMET; break;
+            case C_I_ARMOUR: e.type = ARMOUR; break;
+            case C_I_AKIMBO: e.type = AKIMBO; break;
+            case C_MAPMODEL: e.type = MAPMODEL; break;
+            case C_LADDER: e.type = LADDER; break;
+            case C_CTF_FLAG: e.type = CTFFLAG; break;
+            case C_SOUND: e.type = MAPSOUND; break;
             default: return; // clips are not supported by the importer
         }
         e.o = vec(ce.x * 4 + worldsize / 4, ce.y * 4 + worldsize / 4, ce.z * 4 + worldsize / 2);
 
-  // fixmeah
-        //      e.light.color = vec(1, 1, 1);
-  //      e.light.dir = vec(0, 0, 1);
+        // fixmeah
+        // e.light.color = vec(1, 1, 1);
+        //  e.light.dir = vec(0, 0, 1);
         e.attr1 = ce.attr1;
         e.attr2 = ce.attr2;
         switch(e.type)
@@ -225,6 +226,9 @@ struct cubeloader
                 e.attr5 = 25; // scale
                 // todo: texture
                 break;
+
+            // TODO: add support for other entities like PLAYERSTART, etc
+
             case ET_LIGHT:
                 e.attr1 *= 4;
                 if(!ce.attr3 && !ce.attr4) { e.attr3 = e.attr4 = e.attr2; break; }
@@ -232,18 +236,9 @@ struct cubeloader
             default:
                 e.attr3 = ce.attr3;
                 e.attr4 = ce.attr4;
+                e.attr5 = 0;
                 break;
         }
-        switch(e.type)
-        {
-            case ET_PLAYERSTART:
-            case ET_MAPMODEL:
-                //e.attr5 = 2;
-                //e.attr1 = (int(e.attr1)+180)%360;
-                break;
-            
-        }
-        e.attr5 = 25;
     }
 
     cube &getcube(int x, int y, int z)

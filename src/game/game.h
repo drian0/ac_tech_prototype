@@ -67,10 +67,23 @@ enum                            // static entity types
     MAPSOUND = ET_SOUND,
     SPOTLIGHT = ET_SPOTLIGHT,
     DECAL = ET_DECAL,
+    
+    // start: to be deleted
     TELEPORT,                   // attr1 = idx, attr2 = model, attr3 = tag
     TELEDEST,                   // attr1 = angle, attr2 = idx
     JUMPPAD,                    // attr1 = zpush, attr2 = ypush, attr3 = xpush
     FLAG,                       // attr1 = angle, attr2 = team
+    // end: to be deleted
+
+    CLIPS = ET_GAMESPECIFIC + 10,
+    AMMO, 
+    GRENADE, 
+    HEALTH, 
+    HELMET, 
+    ARMOUR, 
+    AKIMBO, 
+    LADDER, 
+    CTFFLAG,
     MAXENTTYPES,
 
     I_FIRST = 0,
