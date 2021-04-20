@@ -163,6 +163,9 @@
     <ClCompile Include="..\shared\zip.cpp">
       <Filter>shared</Filter>
     </ClCompile>
+    <ClCompile Include="..\engine\assaultcubeloader.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\game\ai.h">
@@ -278,7 +281,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="tesseract.rc" />
+    <ResourceCompile Include="assaultcube.rc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="shared">

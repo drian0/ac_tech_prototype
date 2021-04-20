@@ -524,7 +524,6 @@ struct cubeloader
         {
             ucharbuf q(headerextras[i]->data, headerextras[i]->len);
             int type = headerextras[i]->flags & HX_TYPEMASK;
-            bool deletethis = false;                               // (set deletethis for headers that persist outside headerextras and get reinserted by packheaderextras())
             switch (type)
             {
             case HX_EDITUNDO:
@@ -670,7 +669,7 @@ struct cubeloader
         delete f;
 
         ucharbuf uf(rawcubes.getbuf(), rawcubes.length());
-        bool success = rldecodecubes(uf, world, cubicsize, hdr.version, false, cubicsize);
+        rldecodecubes(uf, world, cubicsize, hdr.version, false, cubicsize);
 
         loopv(cents) create_ent(cents[i]);
 

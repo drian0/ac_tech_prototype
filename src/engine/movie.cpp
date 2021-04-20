@@ -384,7 +384,7 @@ struct aviwriter
         endlistchunk(); // LIST odml
 
         listchunk("LIST", "INFO");
-        const char *software = "Tesseract";
+        const char *software = "AssaultCube";
         writechunk("ISFT", software, strlen(software)+1);
         endlistchunk(); // LIST INFO
 
