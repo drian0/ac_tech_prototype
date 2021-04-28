@@ -82,6 +82,13 @@ struct cubeloader
         C_MAXENTTYPES
     };
 
+    enum
+    {
+        CORNERTYPE_NONE = -1,
+        CORNERTYPE_BETWEEN_FLOOR_CEIL,
+        CORNERTYPE_OUTSIDE_FLOOR_CEIL
+    };
+
     struct c_header                   // map file format header
     {
         char head[4];               // "CUBE"
@@ -321,7 +328,7 @@ struct cubeloader
         loopi(2) loopj(2) edgeset(cubeedge(c, 2, i, j), side, dir*(o[(j<<1)+i]->vdelta-cap)*2+side*8);
     }
 
-    bool cornersolid(int z, c_sqr *s) { return s->type==C_SOLID || z<s->floor || z>=s->ceil; }
+    bool cubesolidandoutsidefloorceil(int z, c_sqr *s) { return s->type==C_SOLID || z<s->floor || z>=s->ceil; }
 
     void createcorner(cube &c, int lstart, int lend, int rstart, int rend)
     {
@@ -343,34 +350,78 @@ struct cubeloader
         {
             c_sqr &s = world[x+y*ssize];
             int floor, ceil, cap = getfloorceil(s, floor, ceil);
+            int prevcorner = -1; // ensure that all corners on the same z axis face same direction
+           
             for(int z = z0-1; z<=z1+1; z++)
             {
                 cube &c = getcube(x, y, z);
                 c.texture[O_LEFT] = c.texture[O_RIGHT] = c.texture[O_BACK] = c.texture[O_FRONT] = s.type!=C_SOLID && z<ceil ? s.wtex : s.utex;
                 c.texture[O_BOTTOM] = s.ctex;
                 c.texture[O_TOP] = s.ftex;
-                if(z>=floor && z<ceil)
+
+                if(s.type==C_CORNER)
                 {
-                    setfaces(c, F_EMPTY);
-                }
-                else if(s.type==C_CORNER)
-                {
+                    // determine if neighboring solid cubes exist outside floor ceil range
                     c_sqr *ts, *bs, *ls, *rs;
-                    bool tc = cornersolid(z, ts = &s-ssize);
-                    bool bc = cornersolid(z, bs = &s+ssize);
-                    bool lc = cornersolid(z, ls = &s-1);
-                    bool rc = cornersolid(z, rs = &s+1);
-                    if     (tc && lc && !bc && !rc) createcorner(c, 0, 8, 0, 0);    // TOP LEFT
-                    else if(tc && !lc && !bc && rc) createcorner(c, 0, 0, 0, 8);    // TOP RIGHT
-                    else if(!tc && lc && bc && !rc) createcorner(c, 0, 8, 8, 8);    // BOT LEFT
-                    else if(!tc && !lc && bc && rc) createcorner(c, 8, 8, 0, 8);    // BOT RIGHT
-                    else        // fix texture on ground of a corner
+                    bool tc = cubesolidandoutsidefloorceil(z, ts = &s-ssize);
+                    bool bc = cubesolidandoutsidefloorceil(z, bs = &s+ssize);
+                    bool lc = cubesolidandoutsidefloorceil(z, ls = &s-1);
+                    bool rc = cubesolidandoutsidefloorceil(z, rs = &s+1);
+
+                    // determine if neighboring cubes are solid
+                    bool tcs = ts->type == C_SOLID;
+                    bool bcs = bs->type == C_SOLID;
+                    bool lcs = ls->type == C_SOLID;
+                    bool rcs = rs->type == C_SOLID;
+
+                    // By default a corner surface is applies below floor level and above ceil level.
+                    // An exception to this is having two neighboring solid cubes in which case the corner surface
+                    // is drawn from floor to ceil instead.
+                    int cornertype = CORNERTYPE_NONE;
+                    if (tcs && lcs && !bcs && !rcs) cornertype = CORNERTYPE_BETWEEN_FLOOR_CEIL;
+                    else if (tcs && !lcs && !bcs && rcs) cornertype = CORNERTYPE_BETWEEN_FLOOR_CEIL;
+                    else if (!tcs && lcs && bcs && !rcs) cornertype = CORNERTYPE_BETWEEN_FLOOR_CEIL;
+                    else if (!tcs && !lcs && bcs && rcs) cornertype = CORNERTYPE_BETWEEN_FLOOR_CEIL;
+                    else cornertype = CORNERTYPE_OUTSIDE_FLOOR_CEIL;
+
+                    if (tc && lc && !bc && !rc && (prevcorner == -1 || prevcorner == 0)) 
+                    { 
+                        // TOP LEFT
+                        if(allowcorner(cornertype, z, floor, ceil)) { createcorner(c, 0, 8, 0, 0); prevcorner = 0; }
+                        else setfaces(c, F_EMPTY);
+                    }   
+                    else if(tc && !lc && !bc && rc && (prevcorner == -1 || prevcorner == 1)) 
+                    { 
+                        // TOP RIGHT
+                        if(allowcorner(cornertype, z, floor, ceil)) { createcorner(c, 0, 0, 0, 8); prevcorner = 1; }
+                        else setfaces(c, F_EMPTY);
+                    }   
+                    else if(!tc && lc && bc && !rc && (prevcorner == -1 || prevcorner == 2)) 
                     {
+                        // BOT LEFT
+                        if(allowcorner(cornertype, z, floor, ceil)) { createcorner(c, 0, 8, 8, 8); prevcorner = 2; }
+                        else setfaces(c, F_EMPTY);
+                    }
+                    else if(!tc && !lc && bc && rc && (prevcorner == -1 || prevcorner == 3)) 
+                    { 
+                        // BOT RIGHT        
+                        if(allowcorner(cornertype, z, floor, ceil)) { createcorner(c, 8, 8, 0, 8); prevcorner = 3; }
+                        else setfaces(c, F_EMPTY);
+                    }                
+                    else        
+                    {
+                        if((cornertype == CORNERTYPE_OUTSIDE_FLOOR_CEIL && z >= floor && z < ceil) || (!tc && !lc && !bc && !rc)) setfaces(c, F_EMPTY);
+                        
+                        // fix texture on ground of a corner
                         if      (ts->floor-1==z && bs->floor-1!=z) { c.texture[O_TOP] = ts->ftex; }
                         else if (ts->floor-1!=z && bs->floor-1==z) { c.texture[O_TOP] = bs->ftex; }
                         if      (ts->ceil==z && bs->ceil!=z)       { c.texture[O_BOTTOM] = ts->ctex; }
                         else if (ts->ceil!=z && bs->ceil==z)       { c.texture[O_BOTTOM] = bs->ctex; }
                     }
+                } 
+                else if (z >= floor && z < ceil)
+                {
+                    setfaces(c, F_EMPTY);
                 }
             }
             switch(s.type)
@@ -390,6 +441,11 @@ struct cubeloader
                 renderprogress(bar, text);
             }
         }
+    }
+
+    bool allowcorner(int cornertype, int z, int floor, int ceil)
+    {
+        return ((cornertype == CORNERTYPE_BETWEEN_FLOOR_CEIL && z >= floor && z < ceil) || (cornertype == CORNERTYPE_OUTSIDE_FLOOR_CEIL && (z < floor || z >= ceil)));
     }
 
     int fixmapheadersize(int version, int headersize)   // we can't trust hdr.headersize for file versions < 10 (thx flow)
@@ -560,7 +616,21 @@ struct cubeloader
                     loopv(actextures)
                     {
                         float newscale = 2.0f / (actextures[i].scale > 0 ? actextures[i].scale : 1);
-                        f->printf("texture 0 \"%s\"; texscale %.1f\n", actextures[i].name, newscale);
+                        char *lastdot = strrchr(actextures[i].name, '.');
+                        bool hasfileextension = (lastdot && lastdot > actextures[i].name);
+                        string tex;
+                        if(hasfileextension) 
+                        {
+                            size_t len = min(lastdot - actextures[i].name, MAXSTRLEN-1);
+                            strncpy(tex, actextures[i].name, len);
+                            tex[len] = '\0';
+                        }
+                        else strncpy(tex, actextures[i].name, MAXSTRLEN);
+                        f->printf("texload \"%s\"; texscale %.1f; setshader \"stdworld\";\n", tex, newscale);
+
+                        // uncomment line below to get oldschool texture look instead (only diffuse tex, no bumpmaps, etc.)
+                        // this could be extended so that we automatically fallback to oldschool textures if the file at path ${tex}.tex does not exist
+                        //f->printf("texture 0 \"%s\"; texscale %.1f\n", actextures[i].name, newscale);
                     }
                     delete f;
                 }
