@@ -72,10 +72,10 @@ enum                            // static entity types
     TELEPORT,                   // attr1 = idx, attr2 = model, attr3 = tag
     TELEDEST,                   // attr1 = angle, attr2 = idx
     JUMPPAD,                    // attr1 = zpush, attr2 = ypush, attr3 = xpush
-    FLAG,                       // attr1 = angle, attr2 = team
     // end: to be deleted
+    FLAG,                       // attr1 = angle, attr2 = team
 
-    CLIPS = ET_GAMESPECIFIC + 10,
+    CLIPS = ET_GAMESPECIFIC + 20, // leave some space for engine extensions..
     AMMO, 
     GRENADE, 
     HEALTH, 
@@ -83,7 +83,6 @@ enum                            // static entity types
     ARMOUR, 
     AKIMBO, 
     LADDER, 
-    CTFFLAG,
     MAXENTTYPES,
 
     I_FIRST = 0,

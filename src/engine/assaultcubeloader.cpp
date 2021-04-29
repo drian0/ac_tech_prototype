@@ -194,56 +194,90 @@ struct cubeloader
     }
 
     void create_ent(c_persistent_entity &ce)
-    {
-        extentity& e = *entities::newentity();
-        entities::getents().add(&e);
+    {        
+        int newtype;
         switch(ce.type)
         {
-            case C_LIGHT: e.type = LIGHT; break;
-            case C_PLAYERSTART: e.type = PLAYERSTART; break;
-            case C_I_CLIPS: e.type = CLIPS; break;
-            case C_I_AMMO: e.type = AMMO; break;
-            case C_I_GRENADE: e.type = GRENADE; break;
-            case C_I_HEALTH: e.type = HEALTH; break;
-            case C_I_HELMET: e.type = HELMET; break;
-            case C_I_ARMOUR: e.type = ARMOUR; break;
-            case C_I_AKIMBO: e.type = AKIMBO; break;
-            case C_MAPMODEL: e.type = MAPMODEL; break;
-            case C_LADDER: e.type = LADDER; break;
-            case C_CTF_FLAG: e.type = CTFFLAG; break;
-            case C_SOUND: e.type = MAPSOUND; break;
-            default: return; // clips are not supported by the importer
+            case C_LIGHT: newtype = LIGHT; break;
+            case C_PLAYERSTART: newtype = PLAYERSTART; break;
+            case C_CTF_FLAG: newtype = FLAG; break;
+            case C_I_CLIPS: newtype = CLIPS; break;
+            case C_I_AMMO: newtype = AMMO; break;
+            case C_I_GRENADE: newtype = GRENADE; break;
+            case C_I_HEALTH: newtype = HEALTH; break;
+            case C_I_HELMET: newtype = HELMET; break;
+            case C_I_ARMOUR: newtype = ARMOUR; break;
+            case C_I_AKIMBO: newtype = AKIMBO; break;
+            case C_MAPMODEL: newtype = MAPMODEL; break;
+            case C_LADDER: newtype = LADDER; break;
+            case C_SOUND: newtype = MAPSOUND; break;
+            // not supported by the import:
+            case C_CLIP:
+            case C_PLCLIP:
+            case C_DUMMYENT:
+            default: return; 
         }
-        e.o = vec(ce.x * 4 + worldsize / 4, ce.y * 4 + worldsize / 4, ce.z * 4 + worldsize / 2);
 
-        // fixmeah
-        // e.light.color = vec(1, 1, 1);
-        //  e.light.dir = vec(0, 0, 1);
-        e.attr1 = ce.attr1;
-        e.attr2 = ce.attr2;
+        extentity& e = *entities::newentity();
+        entities::getents().add(&e);
+        e.o = vec(ce.x * 4 + worldsize / 4, ce.y * 4 + worldsize / 4, ce.z * 4 + worldsize / 2);
+        e.type = newtype;
         switch(e.type)
         {
-            case ET_MAPMODEL:
-                e.o.z = (float)(S(ce.x, ce.y)->floor + ce.attr3/5) * 4 + worldsize / 2; // elevation
-                //e.o.z += ce.attr3 * 4 / 5;
+            case LIGHT:
+                e.attr1 = ce.attr1; // radius 
+                e.attr1 *= 4;
+                if (!ce.attr3 && !ce.attr4) { e.attr2 = e.attr3 = e.attr4 = ce.attr2; } // intensitiy e.g. white light
+                else { e.attr2 = ce.attr2; e.attr3 = ce.attr3; e.attr4 = ce.attr4; } // individual r,g,b values
+                break;
+
+            case PLAYERSTART:
+                e.attr1 = ((ce.attr1 / 10) + 270) % 360; // angle
+                e.attr2 = ce.attr2; // team
+                break;
+
+            case CLIPS:
+            case AMMO:
+            case GRENADE:
+            case HEALTH: 
+            case HELMET: 
+            case ARMOUR: 
+            case AKIMBO:
+                e.o.z = (float)(S(ce.x, ce.y)->floor + ce.attr1 / 5) * 4 + worldsize / 2; // elevation
+                break;
+
+            case MAPMODEL:
+                e.o.z = (float)(S(ce.x, ce.y)->floor + ce.attr3 / 5) * 4 + worldsize / 2; // elevation
                 e.attr1 = ce.attr2; // idx
                 e.attr2 = ((ce.attr1 / 10) + 270) % 360; // yaw
                 e.attr3 = ce.attr5 / 10; // pitch
                 e.attr4 = ce.attr6; // roll
                 e.attr5 = 25; // scale
-                // todo: texture
+                // todo: texture?
                 break;
 
-            // TODO: add support for other entities like PLAYERSTART, etc
+            case LADDER:
+                e.attr1 = ce.attr1; // todo: support ladder entities
+                break;
 
-            case ET_LIGHT:
-                e.attr1 *= 4;
-                if(!ce.attr3 && !ce.attr4) { e.attr3 = e.attr4 = e.attr2; break; }
-                // fall through
+            case FLAG:
+                e.attr1 = ((ce.attr1 / 10) + 270) % 360; // angle
+                e.attr2 = ce.attr2; // red/blue
+                break;
+
+            case MAPSOUND:
+                e.attr1 = ce.attr1; // sound idx
+                e.attr2 = ce.attr2 * 4; // radius
+                e.attr3 = ce.attr3; // todo: size - not supported yet
+                e.attr3 = ce.attr4; // todo: volume - not supported yet
+                break;
+
             default:
+                e.attr1 = ce.attr1;
+                e.attr2 = ce.attr2;
                 e.attr3 = ce.attr3;
                 e.attr4 = ce.attr4;
-                e.attr5 = 0;
+                e.attr5 = ce.attr5;
                 break;
         }
     }
@@ -355,7 +389,10 @@ struct cubeloader
             for(int z = z0-1; z<=z1+1; z++)
             {
                 cube &c = getcube(x, y, z);
-                c.texture[O_LEFT] = c.texture[O_RIGHT] = c.texture[O_BACK] = c.texture[O_FRONT] = s.type!=C_SOLID && z<ceil ? s.wtex : s.utex;
+                
+                // apply textures
+                int walltex = s.type != C_SOLID && z < ceil ? s.wtex : s.utex;
+                c.texture[O_LEFT] = c.texture[O_RIGHT] = c.texture[O_BACK] = c.texture[O_FRONT] = walltex;
                 c.texture[O_BOTTOM] = s.ctex;
                 c.texture[O_TOP] = s.ftex;
 
@@ -408,15 +445,15 @@ struct cubeloader
                         if(allowcorner(cornertype, z, floor, ceil)) { createcorner(c, 8, 8, 0, 8); prevcorner = 3; }
                         else setfaces(c, F_EMPTY);
                     }                
-                    else        
+                    else
                     {
-                        if((cornertype == CORNERTYPE_OUTSIDE_FLOOR_CEIL && z >= floor && z < ceil) || (!tc && !lc && !bc && !rc)) setfaces(c, F_EMPTY);
-                        
+                        if ((cornertype == CORNERTYPE_OUTSIDE_FLOOR_CEIL && z >= floor && z < ceil) || (!tc && !lc && !bc && !rc)) setfaces(c, F_EMPTY);
+
                         // fix texture on ground of a corner
-                        if      (ts->floor-1==z && bs->floor-1!=z) { c.texture[O_TOP] = ts->ftex; }
-                        else if (ts->floor-1!=z && bs->floor-1==z) { c.texture[O_TOP] = bs->ftex; }
-                        if      (ts->ceil==z && bs->ceil!=z)       { c.texture[O_BOTTOM] = ts->ctex; }
-                        else if (ts->ceil!=z && bs->ceil==z)       { c.texture[O_BOTTOM] = bs->ctex; }
+                        if (ts->floor - 1 == z && bs->floor - 1 != z) { c.texture[O_TOP] = ts->ftex; }
+                        else if (ts->floor - 1 != z && bs->floor - 1 == z) { c.texture[O_TOP] = bs->ftex; }
+                        if (ts->ceil == z && bs->ceil != z) { c.texture[O_BOTTOM] = ts->ctex; }
+                        else if (ts->ceil != z && bs->ceil == z) { c.texture[O_BOTTOM] = bs->ctex; }
                     }
                 } 
                 else if (z >= floor && z < ceil)
@@ -658,6 +695,9 @@ struct cubeloader
 
     void load_assaultcube_world(char *mname, int size)
     {
+        // 12 is a sufficiently large map size to fit in legacy assaultcube maps
+        if(!size) size = 12;
+
         int loadingstart = SDL_GetTicks();
         string pakname, cgzname;
         formatstring(pakname, "legacyformat/%s", mname);
@@ -743,16 +783,16 @@ struct cubeloader
         mpremip(true);
         clearlights();
         allchanged();
-        //vector<extentity *> &ents = entities::getents();
-        //loopv(ents) if(ents[i]->type!=ET_LIGHT) dropenttofloor(ents[i]);
+        vector<extentity *> &ents = entities::getents();
+        loopv(ents) if(ents[i]->type==ET_PLAYERSTART) dropenttofloor(ents[i]);
         entitiesinoctanodes();
         conoutf("read assaultcube map %s (%.1f seconds)", cgzname, (SDL_GetTicks()-loadingstart)/1000.0f);
-        //startmap(NULL);
-
+        
         string newmapname;
         formatstring(newmapname, "%s_imported", mname);
         save_world(newmapname);
-        startmap(newmapname);
+
+        game::changemap(newmapname);
     }
 };
 
