@@ -652,22 +652,32 @@ struct cubeloader
                     f->printf("texturereset\n");
                     loopv(actextures)
                     {
-                        float newscale = 2.0f / (actextures[i].scale > 0 ? actextures[i].scale : 1);
+                        string tex;
+                        bool hastexconfigfile = false;
+
+
                         char *lastdot = strrchr(actextures[i].name, '.');
                         bool hasfileextension = (lastdot && lastdot > actextures[i].name);
-                        string tex;
                         if(hasfileextension) 
                         {
                             size_t len = min(lastdot - actextures[i].name, MAXSTRLEN-1);
                             strncpy(tex, actextures[i].name, len);
                             tex[len] = '\0';
+                            // .tex files are the new way to define textures, if it exists use it
+                            defformatstring(texconfigfilepath, "%s.tex", tex);
+                            hastexconfigfile = fileexists(texconfigfilepath, "r");
                         }
-                        else strncpy(tex, actextures[i].name, MAXSTRLEN);
-                        f->printf("texload \"%s\"; texscale %.1f; setshader \"stdworld\";\n", tex, newscale);
+                        else
+                        {
+                            // this texture is most likely broken as it has no extension, let us just copy it unmodified
+                            strncpy(tex, actextures[i].name, MAXSTRLEN);
+                        }
 
-                        // uncomment line below to get oldschool texture look instead (only diffuse tex, no bumpmaps, etc.)
-                        // this could be extended so that we automatically fallback to oldschool textures if the file at path ${tex}.tex does not exist
-                        //f->printf("texture 0 \"%s\"; texscale %.1f\n", actextures[i].name, newscale);
+                        float newscale = 2.0f / (actextures[i].scale > 0 ? actextures[i].scale : 1);
+                        if(hastexconfigfile)
+                            f->printf("texload \"%s\"; texscale %.1f; setshader \"stdworld\";\n", tex, newscale);
+                        else 
+                            f->printf("texture 0 \"%s\"; texscale %.1f\n", actextures[i].name, newscale);
                     }
                     delete f;
                 }
