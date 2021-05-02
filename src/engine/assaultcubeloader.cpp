@@ -664,7 +664,7 @@ struct cubeloader
                             strncpy(tex, actextures[i].name, len);
                             tex[len] = '\0';
                             // .tex files are the new way to define textures, if it exists use it
-                            defformatstring(texconfigfilepath, "%s.tex", tex);
+                            defformatstring(texconfigfilepath, "media/texture/%s.tex", tex);
                             hastexconfigfile = fileexists(texconfigfilepath, "r");
                         }
                         else
