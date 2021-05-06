@@ -122,12 +122,7 @@ static struct gamemodeinfo
 {
     { "demo", "Demo", M_DEMO | M_LOCAL, NULL},
     { "edit", "Edit", M_EDIT, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
-    { "rdm", "rDM", M_LOBBY | M_RAIL, "Railgun Deathmatch:\nFrag everyone with railguns to score points." },
-    { "pdm", "pDM", M_LOBBY | M_PULSE, "Pulse Rifle Deathmatch:\nFrag everyone with pulse rifles to score points." },
-    { "rtdm", "rTDM", M_TEAM | M_RAIL, "Railgun Team Deathmatch:\nFrag \fs\f3the enemy team\fr with railguns to score points for \fs\f1your team\fr." },
-    { "ptdm", "pTDM", M_TEAM | M_PULSE, "Pulse Rifle Team Deathmatch:\nFrag \fs\f3the enemy team\fr with pulse rifles to score points for \fs\f1your team\fr." },
-    { "rctf", "rCTF", M_CTF | M_TEAM | M_RAIL, "Railgun Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
-    { "pctf", "pCTF", M_CTF | M_TEAM | M_PULSE, "Pulse Rifle Capture The Flag:\nCapture \fs\f3the enemy flag\fr and bring it back to \fs\f1your flag\fr to score points for \fs\f1your team\fr." },
+    { "asak", "ASAK", M_LOBBY | M_RAIL, "Another shot another kill:\nFrag everyone with sniper rifles to score points. Sniper rifles do have crosshairs. Traditional instagib." },
 };
 
 #define STARTGAMEMODE (-1)
@@ -297,17 +292,17 @@ static struct itemstat { int add, max, sound; const char *name; int icon, info; 
 #define EXP_SELFPUSH 2.5f
 #define EXP_DISTSCALE 0.5f
 
-static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use; } attacks[NUMATKS] =
+static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound, hudsound, attackdelay, damage, spread, margin, projspeed, kickamount, range, rays, hitpush, exprad, ttl, use, mdl_kick_rot, mdl_kick_back; } attacks[NUMATKS] =
 {
-    { GUN_KNIFE, ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_KNIFE, S_KNIFE, 700, 1, 0, 1, 1000, 30, 1024, 1, 5000, 15, 0, 0 },
-    { GUN_PISTOL,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_CARBINE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_CARBINE,  S_CARBINE, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_SHOTGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SHOTGUN,  S_SHOTGUN, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_SUBGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SUBGUN,  S_SUBGUN, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_SNIPER,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SNIPER,  S_SNIPER, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_ASSAULT,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_ASSAULT,  S_ASSAULT, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_GRENADE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_GRENADEPULL,  S_GRENADEPULL, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
-    { GUN_AKIMBO,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0 },
+    { GUN_KNIFE, ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_KNIFE, S_KNIFE, 500, 1, 0, 1, 1000, 30, 1024, 1, 5000, 15, 0, 0, 0, 0 },
+    { GUN_PISTOL,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 160, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 6, 5 },
+    { GUN_CARBINE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_CARBINE,  S_CARBINE, 720, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 4, 4 },
+    { GUN_SHOTGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SHOTGUN,  S_SHOTGUN, 880, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 9, 9 },
+    { GUN_SUBGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SUBGUN,  S_SUBGUN, 80, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 1, 2 },
+    { GUN_SNIPER,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SNIPER,  S_SNIPER, 1500, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 4, 4 },
+    { GUN_ASSAULT,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_ASSAULT,  S_ASSAULT, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 0, 2 },
+    { GUN_GRENADE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_GRENADEPULL,  S_GRENADEPULL, 650  , 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 3, 1 },
+    { GUN_AKIMBO,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 80, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 6, 5 },
 };
 
 static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACTS]; } guns[NUMGUNS] =
