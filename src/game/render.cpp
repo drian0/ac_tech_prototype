@@ -1,5 +1,8 @@
 #include "game.h"
 
+
+extern int farplane;
+
 namespace game
 {
     vector<gameent *> bestplayers;
@@ -108,6 +111,9 @@ namespace game
 
     int getplayercolor(int team, int color)
     {
+        // AC does not support player colors
+        return 0xffffff;
+        /*
         #define GETPLAYERCOLOR(playercolors) \
             return playercolors[color%(sizeof(playercolors)/sizeof(playercolors[0]))];
         switch(team)
@@ -115,7 +121,7 @@ namespace game
             case 1: GETPLAYERCOLOR(playercolorsazul)
             case 2: GETPLAYERCOLOR(playercolorsrojo)
             default: GETPLAYERCOLOR(playercolors)
-        }
+        }*/
     }
 
     ICOMMAND(getplayercolor, "ii", (int *color, int *team), intret(getplayercolor(*team, *color)));
@@ -373,15 +379,136 @@ namespace game
     VARP(hudgun, 0, 1, 1);
     VARP(hudgunsway, 0, 1, 1);
 
+    /*
     FVAR(swaystep, 1, 35.0f, 100);
     FVAR(swayside, 0, 0.10f, 1);
     FVAR(swayup, -1, 0.15f, 1);
+    */
 
+    VARP(nosway, 0, 0, 1);
+    VARP(swayspeeddiv, 1, 105, 1000);
+    VARP(swaymovediv, 1, 200, 1000);
+    VARP(swayupspeeddiv, 1, 105, 1000);
+    VARP(swayupmovediv, 1, 200, 1000);
+
+    struct weaponmove
+    {
+        static vec swaydir;
+        static int swaymillis, lastsway;
+
+        float k_rot, kick;
+        vec pos;
+        int anim, basetime;
+
+        weaponmove() : k_rot(0), kick(0), anim(0), basetime(0) { pos.x = pos.y = pos.z = 0.0f; }
+
+        void calcmove(vec aimdir, int lastaction, gameent* p)
+        {
+            kick = k_rot = 0.0f;
+            pos = p->o;
+
+            if(!nosway)
+            {
+                float k = pow(0.7f, (lastmillis - lastsway) / 10.0f);
+                swaydir.mul(k);
+                vec dv(p->vel);
+                dv.mul((1 - k) / max(p->vel.magnitude(), p->maxspeed));
+                dv.x *= 1.5f;
+                dv.y *= 1.5f;
+                dv.z *= 0.4f;
+                swaydir.add(dv);
+                pos.add(swaydir);
+            }
+
+            /*if(p->onfloor || p->onladder || p->inwater)*/ swaymillis += lastmillis - lastsway;
+            lastsway = lastmillis;
+
+            /*if (p->weaponchanging)
+            {
+                anim = ANIM_GUN_RELOAD;
+                basetime = p->weaponchanging;
+                float progress = clamp((lastmillis - p->weaponchanging) / (float)weapon::weaponchangetime, 0.0f, 1.0f);
+                k_rot = -90 * sinf(progress * PI);
+            }
+            else if (p->weaponsel->reloading)
+            {
+                anim = ANIM_GUN_RELOAD;
+                basetime = p->weaponsel->reloading;
+                float reloadtime = (float)p->weaponsel->info.reloadtime,
+                    progress = clamp((lastmillis - p->weaponsel->reloading) / reloadtime, 0.0f, clamp(1.0f - (p->lastaction + p->weaponsel->gunwait - lastmillis) / reloadtime, 0.5f, 1.0f));
+                k_rot = -90 * sinf(progress * PI);
+            }
+            else*/
+            {
+                anim = ANIM_GUN_IDLE;
+                basetime = lastaction;
+
+                int timediff = lastmillis - lastaction,
+                    animtime = min(p->gunwait, attacks[p->lastattack].attackdelay /*(int)p->weaponsel->info.attackdelay*/);
+                vec sway = aimdir;
+                float progress = 0.0f;
+                float k_back = 0.0f;
+
+                //if(p->weaponsel == p->lastattackweapon)
+                if(p->gunselect == attacks[p->lastattack].gun)
+                {
+                    progress = max(0.0f, min(1.0f, timediff / (float)animtime));
+                    // f(x) = -sin(x-1.5)^3
+                    kick = -sinf(pow((1.5f * progress) - 1.5f, 3));
+                    if (p->crouching) kick *= 0.75f;
+                    // fixme if (p->lastaction) anim = p->weaponsel->modelanim();
+
+                    if (attacks[p->lastattack].mdl_kick_rot || attacks[p->lastattack].mdl_kick_back)
+                    {
+                        k_rot = attacks[p->lastattack].mdl_kick_rot * kick;
+                        k_back = attacks[p->lastattack].mdl_kick_back * kick/* / 10*/;
+                    }
+                }
+
+                if (nosway) sway.x = sway.y = sway.z = 0;
+                else
+                {
+                    float swayspeed = sinf((float)swaymillis / swayspeeddiv) / (swaymovediv / 10.0f);
+                    float swayupspeed = cosf((float)swaymillis / swayupspeeddiv) / (swayupmovediv / 10.0f);
+
+                    float plspeed = min(1.0f, sqrtf(p->vel.x * p->vel.x + p->vel.y * p->vel.y));
+
+                    swayspeed *= plspeed / 2;
+                    swayupspeed *= plspeed / 2;
+
+                    swap(sway.x, sway.y);
+                    sway.y = -sway.y;
+
+                    swayupspeed = fabs(swayupspeed); // sway a semicirle only
+                    sway.z = 1.0f;
+
+                    sway.x *= swayspeed;
+                    sway.y *= swayspeed;
+                    sway.z *= swayupspeed;
+
+                    if (p->crouching) sway.mul(0.75f);
+                }
+
+                pos.x -= aimdir.x * k_back + sway.x;
+                pos.y -= aimdir.y * k_back + sway.y;
+                pos.z -= aimdir.z * k_back + sway.z;
+            }
+        }
+    };
+
+    vec weaponmove::swaydir(0, 0, 0);
+    int weaponmove::lastsway = 0, weaponmove::swaymillis = 0;
+
+    /*
     float swayfade = 0, swayspeed = 0, swaydist = 0;
     vec swaydir(0, 0, 0);
-
+    */
     void swayhudgun(int curtime)
     {
+        
+        
+        
+        /*
         gameent *d = hudplayer();
         if(d->state != CS_SPECTATOR)
         {
@@ -404,7 +531,7 @@ namespace game
             vec vel(d->vel);
             vel.add(d->falling);
             swaydir.add(vec(vel).mul((1-k)/(15*max(vel.magnitude(), d->maxspeed))));
-        }
+        }*/
     }
 
     struct hudent : dynent
@@ -417,23 +544,21 @@ namespace game
         const char *file = guns[d->gunselect].file;
         if(!file) return;
 
-        vec sway;
-        vecfromyawpitch(d->yaw, 0, 0, 1, sway);
-        float steps = swaydist/swaystep*M_PI;
-        sway.mul(swayside*cosf(steps));
-        sway.z = swayup*(fabs(sinf(steps)) - 1);
-        sway.add(swaydir).add(d->o);
-        if(!hudgunsway) sway = d->o;
-
-        // fixme: make the hudgun position look 100% like ac v1
         vec aimdirection;
         float dist = worldpos.dist(d->o, aimdirection);
         aimdirection.div(dist);
-        sway.x += aimdirection.x * 10.0f;
-        sway.y += aimdirection.y * 10.0f;
-        sway.z += aimdirection.z * 10.0f;
-        float yaw = d->yaw + 180.0;
-        float pitch = -d->pitch;
+
+      //  vec sway;
+      //  vecfromyawpitch(d->yaw, 0, 0, 1, sway);
+
+        /*float steps = swaydist/swaystep*M_PI;
+        sway.mul(swayside*cosf(steps));
+        sway.z = swayup*(fabs(sinf(steps)) - 1);
+        sway.add(swaydir).add(d->o);
+        if(!hudgunsway) sway = d->o;*/
+
+        weaponmove wm;
+        if (!intermission || !ispaused) wm.calcmove(aimdirection, basetime, d);
 
         const playermodelinfo &mdl = getplayermodelinfo(d);
         int team = m_teammode && validteam(d->team) ? d->team : 0,
@@ -443,8 +568,13 @@ namespace game
         d->muzzle = vec(-1, -1, -1);
         a[0] = modelattach("tag_muzzle", &d->muzzle);
         //rendermodel(gunname, anim, sway, d->yaw+180, -d->pitch, 0, MDL_NOBATCH, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
-        rendermodel(gunname, anim, sway, yaw, pitch, 0, MDL_NOBATCH, NULL, a, basetime, 0, 1, vec4(vec::hexcolor(color), 1));
-        if(d->muzzle.x >= 0) d->muzzle = calcavatarpos(d->muzzle, 12);
+        anim |= ANIM_SETSPEED;
+        float speed = 40.0f;
+        rendermodel(gunname, anim, wm.pos, d->yaw+180, -d->pitch - wm.k_rot, 0, MDL_NOBATCH, NULL, a, wm.basetime, speed, 1, vec4(vec::hexcolor(color), 1));
+        //rendermodel(path, wm.anim | ANIM_DYNALLOC | (righthanded == index ? ANIM_MIRROR : 0) | (emit ? ANIM_PARTICLE : 0), 0, -1, wm.pos, 0, p->yaw + 90, p->pitch + wm.k_rot, 40.0f, wm.basetime, NULL, NULL, 1.28f);
+
+        if(d->muzzle.x >= 0) 
+            d->muzzle = calcavatarpos(d->muzzle, 12);
     }
 
     void drawhudgun()

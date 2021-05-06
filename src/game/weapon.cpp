@@ -509,9 +509,9 @@ namespace game
         if(stain)
         {
             addstain(STAIN_RAIL_HOLE, to, dir, 2.0f);
-            addstain(STAIN_RAIL_GLOW, to, dir, 2.5f, 0x50CFE5);
+            addstain(STAIN_RAIL_GLOW, to, dir, 2.5f, 0x222222);
         }
-        adddynlight(vec(to).madd(dir, 4), 10, vec(0.25f, 0.75f, 1.0f), 225, 75);
+        adddynlight(vec(to).madd(dir, 4), 10, vec(1.0f, 1.0f, 233.0f/255.0f), 225, 75);
     }
 
     void shoteffects(int atk, const vec &from, const vec &to, gameent *d, bool local, int id, int prevaction)     // create visual effect from a shot
@@ -525,12 +525,13 @@ namespace game
                 newprojectile(from, to, attacks[atk].projspeed, local, id, d, atk);
                 break;
 
-            case ATK_KNIFE:
-                particle_splash(PART_SPARK, 200, 250, to, 0x50CFE5, 0.45f);
-                particle_flare(hudgunorigin(gun, from, to, d), to, 500, PART_RAIL_TRAIL, 0x50CFE5, 0.5f);
-                if(d->muzzle.x >= 0)
-                    particle_flare(d->muzzle, d->muzzle, 140, PART_RAIL_MUZZLE_FLASH, 0x50CFE5, 2.75f, d);
-                adddynlight(hudgunorigin(gun, d->o, to, d), 35, vec(0.25f, 0.75f, 1.0f), 75, 75, DL_FLASH, 0, vec(0, 0, 0), d);
+            case ATK_SNIPER:
+                particle_splash(PART_SPARK, 200, 250, to, 0x222222, 0.45f);
+                particle_flare(hudgunorigin(gun, from, to, d), to, 500, PART_RAIL_TRAIL, 0xFFFFE6, 0.5f);
+                if(d->muzzle.x >= 0) particle_flare(d->muzzle, d->muzzle, 50, PART_RAIL_MUZZLE_FLASH, 0xFFFFE6, 2.75f, d);
+                adddynlight(hudgunorigin(gun, d->o, to, d), 35, vec(1.0f, 1.0f, 230.0f/255.0f), 75, 75, DL_FLASH, 0, vec(0, 0, 0), d);
+                particle_trail(PART_SMOKE, 500, from, to);
+                //particle_trail(PART_SMOKE, 500, d->muzzle, to); // fixmeah
                 if(!local) railhit(from, to);
                 break;
 
@@ -662,12 +663,15 @@ namespace game
         }
         d->ammo[gun] -= attacks[atk].use;
 
-        vec from = d->o, to = targ, dir = vec(to).sub(from).safenormalize();
+        //vec from = d->o
+        vec from = d->muzzle;
+        
+        vec to = targ, dir = vec(to).sub(from).safenormalize();
         float dist = to.dist(from);
         if(!(d->physstate >= PHYS_SLOPE && d->crouching && d->crouched()))
         {
             vec kickback = vec(dir).mul(attacks[atk].kickamount*-2.5f);
-            d->vel.add(kickback);
+            // fixmeah d->vel.add(kickback);
         }
         float shorten = attacks[atk].range && dist > attacks[atk].range ? attacks[atk].range : 0,
               barrier = raycube(d->o, dir, dist, RAY_CLIPMAT|RAY_ALPHAPOLY);
