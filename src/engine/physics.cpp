@@ -1729,7 +1729,8 @@ void modifyvelocity(physent *pl, bool local, bool water, bool floating, int curt
             m.z = water ? max(m.z, dz) : dz;
         }
 
-        m.normalize();
+        // we want AC v1 strafe running and so we don't normalize
+        //m.normalize();
     }
 
     vec d(m);
