@@ -269,6 +269,9 @@ struct md5 : skelloader<md5>
             stream *f = openfile(filename, "r");
             if(!f) return NULL;
 
+            hashtable<const char *, boneinfo *> boneslookup;
+            loopi(skel->numbones) boneslookup[skel->bones[i].name] = &skel->bones[i];
+
             vector<md5hierarchy> hierarchy;
             vector<md5joint> basejoints;
             int animdatalen = 0, animframes = 0;
@@ -304,8 +307,17 @@ struct md5 : skelloader<md5>
                     while(f->getline(buf, sizeof(buf)) && buf[0]!='}')
                     {
                         md5hierarchy h;
-                        if(sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start)==4)
+                        if(sscanf(buf, " %100s %d %d %d", h.name, &h.parent, &h.flags, &h.start) == 4)
+                        {
+                            char *start = strchr(h.name, '"'), *end = start ? strchr(start + 1, '"') : NULL;
+                            if(start && end)
+                            {
+                                char* trimmed = newstring(start + 1, end - (start + 1));
+                                copystring(h.name, trimmed);
+                                delete[] trimmed;
+                            }
                             hierarchy.add(h);
+                        }
                     }
                 }
                 else if(strstr(buf, "baseframe {"))
@@ -366,11 +378,18 @@ struct md5 : skelloader<md5>
                         }
                         dualquat dq(j.orient, j.pos);
                         if(adjustments.inrange(i)) adjustments[i].adjust(dq);
-                        boneinfo &b = skel->bones[i];
-                        dq.mul(b.invbase);
+                        boneinfo **b = boneslookup.access(h.name);
+                        ASSERT(b && *b);
+                        dq.mul((*b)->invbase);
                         dualquat &dst = frame[i];
                         if(h.parent < 0) dst = dq;
-                        else dst.mul(skel->bones[h.parent].base, dq);
+                        else
+                        {
+                            md5hierarchy& parenth = hierarchy[h.parent];
+                            boneinfo **parentb = boneslookup.access(parenth.name);
+                            ASSERT(parentb && *parentb);
+                            dst.mul((*parentb)->base, dq);
+                        }
                         dst.fixantipodal(skel->framebones[i]);
                     }
                 }
