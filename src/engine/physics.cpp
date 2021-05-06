@@ -1464,7 +1464,8 @@ bool move(physent *d, vec &dir)
 void crouchplayer(physent *pl, int moveres, bool local)
 {
     if(!curtime) return;
-    float minheight = pl->maxheight * CROUCHHEIGHT, speed = (pl->maxheight - minheight) * curtime / float(CROUCHTIME);
+    float minheight = pl->maxheight * CROUCHHEIGHT;
+    float speed = (pl->maxheight - minheight) * curtime * (pl->inwater ? 0.5f : 1.0f) / float(CROUCHTIME);
     if(pl->crouching < 0)
     {
         if(pl->eyeheight > minheight)
