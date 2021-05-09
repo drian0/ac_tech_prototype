@@ -14,3 +14,14 @@ The Cube Engine has meanwhile been succeeded by [Cube 2: Sauerbraten](http://sau
 
 The purpose of the prototype is to explore how the technology of AssaultCube could be renewed by using Tesseract.
 
+## Storybook ##
+
+A quick tour:
+
+- Start AssaultCube
+- Go to "Options" and then Resolution/Display and make sure you set the proper resolution and a high level of anti aliasing for proper gfx
+- Navigate to "Map Browser" and click the map "ac_complex"
+- Walk around and look at the red bricks (parallax mapping)
+- Walk to the center square to see a few static player models 
+- Press T and type /thirdperson 2 to see an animated player model in action
+- Press T and type /addbot, then shoot the boot to see ragdoll physics in action
