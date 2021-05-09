@@ -558,7 +558,7 @@ namespace game
         if(!hudgunsway) sway = d->o;*/
 
         weaponmove wm;
-        if (!intermission || !ispaused) wm.calcmove(aimdirection, basetime, d);
+        if (!intermission || !ispaused()) wm.calcmove(aimdirection, basetime, d);
 
         const playermodelinfo &mdl = getplayermodelinfo(d);
         int team = m_teammode && validteam(d->team) ? d->team : 0,
