@@ -11,4 +11,4 @@ IF EXIST bin64\assaultcube.exe (
     )
 )
 
-start %TESS_BIN%\assaultcube.exe "-u$HOME\My Games\AssaultCube" -glog.txt %*
+start %TESS_BIN%\assaultcube.exe "-u$HOME\My Games\AssaultCube\ACTP" -glog.txt %*
