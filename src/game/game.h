@@ -256,7 +256,7 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
 #define AC_MASTER_PORT 41999
 #define PROTOCOL_VERSION 2              // bump when protocol changes
 #define DEMO_VERSION 1                  // bump when demo format changes
-#define DEMO_MAGIC "AC_DEMO\0\0"
+#define DEMO_MAGIC "AC_DEMO\0\0\0\0\0\0\0\0\0"
 
 struct demoheader
 {
