@@ -1,0 +1,14 @@
+TODO: document migration steps
+
+https://nixart.wordpress.com/2013/03/28/modifying-the-rest-pose-in-blender/
+
+Export, check if all elements are there
+
+object-parent->clear and keep transformation
+
+
+Go to Edit mode, click cigarette mesh, ctrl+click "Null" armature
+ctrl+p armature with automatic weights
+
+mesh {
+// meshes: shotgun

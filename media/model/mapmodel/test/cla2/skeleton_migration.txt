@@ -1,0 +1,40 @@
+center vertex between feets -> C_base
+? -> L_shoulder
+? -> wrist (new)
+spine -> c_spine1..c_spine3
+
+chest -> C_chest
+hip -> C_pelvis
+L_foot -> L_toe
+L_ankle -> L_foot
+L_arm -> L_arm
+L_elbow -> L_forearm
+L_knee -> L_calf
+L_leg -> L_thigh
+
+L_thumb1 -> L_finger1a
+L_thumb2 -> L_finger1b
+L_thumb3 -> L_finger1c
+
+L_point1 -> L_finger2a
+L_point2 -> L_finger2b
+L_point3 -> L_finger2c
+
+L_middle1 -> L_finger3a
+L_middle2 -> L_finger3b
+L_middle3 -> L_finger3c
+
+L_ring1 -> L_finger4a
+L_ring2 -> L_finger4b
+L_ring3 -> L_finger4c
+
+L_ping1 -> L_finger5a
+L_ping2 -> L_finger5b
+L_ping3 -> L_finger5c
+
+L_shoulder -> L_shoulder_pad
+L_thigh -> L_thigh
+
+L_wrist -> L_hand
+
+neck -> C_neck
