@@ -102,7 +102,7 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 - To get started you should try to import ac_complex since its textures do already have some sort of normalmaps/specmaps.
 - Please note that some commands of the [Cube2:Sauerbraten editing reference](http://sauerbraten.org/docs/editref.html) have been advanced by Tesseract, check out the [Tesseract README](http://tesseract.gg/README) and [Tesseract Rending Pipeline Documentation](http://tesseract.gg/renderer.txt)
 - The lighting, specularity and normalmapping features of the engine **should be used wisely**. We should not create technology driven content. AC should retain its theme and should not get a metallic, overbright, overspecced look. The reason why things currently look that way is because it is a simple prototype. Please note that even the very first AC v1 maps (ac_complex and ac_desert) used zero to no colored lights probably for exactly that reason - technology should serve art and not vice versa.
-- There should be an approach for official maps: Existing official maps should be migrated in a way that preserves the original textures (with normal/specmaps) but textures should not be replaced. Lighting should be done in a way that comes close to the v1 look. If the author of a map wishes to further improve the map (geometry/textures) it may be better to create a new version (ac_complex and ac_complex_classic). This is important to remain true to the original look as described in [Risk of community split](#risk-of-community-split).
+- There should be an approach for official maps: Existing official maps should be migrated in a way that preserves the original textures (with normal/specmaps) but textures should not be replaced. Lighting should be done in a way that comes close to the v1 look. If the author of a map wishes to further improve the map (geometry/textures) it may be better to create a new version (ac_complex and ac_complex_classic). This is important to remain true to the original look as described in [community split](#community-split).
 
 ## Texture Migration
 
@@ -113,6 +113,22 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 ## Mapmodel Migration
 
 # Impact
+
+## Community Split
+
+Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour has failed. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. There needs to be a plan in which areas innovation is allowed an in which tradition is ensured. Example:
+
+|Area          |Release X     |Comments      |Release Y     |Comments      |
+|--------------|--------------|--------------|--------------|--------------|
+|Gameplay      |Tradition     |
+|Mood/Theme    |Tradition     |
+|Movement      |Tradition     |
+|Maps          |Tradition     |
+|Texture       |Tradition     |
+|Physics       |Innovate      |
+|Playermodels  |Innvoate      |
+|etc.          |etc.
+
 
 ## Hardware Support
 
