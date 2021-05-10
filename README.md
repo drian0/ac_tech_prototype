@@ -100,7 +100,6 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 - Tesseract comes with a dynamic lighting system whereas AssaultCube v1 used a 2D lighting system. This means the imported lights do not make much sense - delete them with the command `/clearents light` 
 - The imported map will have ceiling cubes with a skybox texture - remove these cubes so that the sunlight reaches into the map
 - Place new [lights](http://sauerbraten.org/docs/editref.html#_light_) and [spotlights](http://sauerbraten.org/docs/editref.html#_spotlight_) in the map
-  - **Avoid overlapping lights**, even if there is a wall in between them. When rendering shadow maps, for every pixel of the shadowmap, it will sample every light that has a radius that reaches that pixel.
 - Tweak the sunlight with the commands [sunlight](http://sauerbraten.org/docs/editref.html#sunlight), [sunlightyaw](http://sauerbraten.org/docs/editref.html#sunlightyaw), [sunlightpitch](http://sauerbraten.org/docs/editref.html#sunlightpitch) and [sunlightscale](http://sauerbraten.org/docs/editref.html#sunlightscale)
 - Tweak the [ambient](http://sauerbraten.org/docs/editref.html#ambient) lighting and [skylight](sauerbraten.org/docs/editref.html#skylight)
 - Tweak diffuse global illumination with giscale, gidist, giaoscale as documented [here](http://tesseract.gg/README)
