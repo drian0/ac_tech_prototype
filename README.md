@@ -2,7 +2,7 @@
 
 ## Purpose ##
 
-Development of the computer game AssaultCube began in 2004 and was first released in 2006. It is based on the [Cube (1) Engine](http://cubeengine.com/). One of the current challenges is the fact that AssaultCube can no longer live up to the expectations of todays players in terms of visual appearance. It may not be possible to make AssaultCube look like a 2021 AAA game and compete with commercial games but it is realistic to catch up significantly.
+Development of the computer game AssaultCube ("AC") began in 2004 and was first released in 2006. It is based on the [Cube (1) Engine](http://cubeengine.com/). One of the current challenges is the fact that AssaultCube can no longer live up to the expectations of todays players in terms of visual appearance. It may not be possible to make AssaultCube look like a 2021 AAA game and compete with commercial games but it is realistic to catch up significantly.
 
 It is safe to say that all the potential of the Cube Engine technology has been fully exploitet. It is not possible to make the game look better with this engine. The artists have done everything possible to use the available tools to the max and they achieved outstanding results considering the technological limits. 
 
@@ -105,6 +105,14 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 - There should be an approach for official maps: Existing official maps should be migrated in a way that preserves the original textures (with normal/specmaps) but textures should not be replaced. Lighting should be done in a way that comes close to the v1 look. If the author of a map wishes to further improve the map (geometry/textures) it may be better to create a new version (ac_complex and ac_complex_classic). This is important to remain true to the original look as described in [community split](#community-split).
 
 ## Texture Migration
+
+AC v1 supported diffuse textures only whereas Tessearct supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex file per texture slot to define the types and that shader that is applied.
+
+Examples:
+- [Bricks with Parallax Mapping](/media/texture/mayang/bricks_2.tex)
+- 
+
+See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
 ## Hudgunmodel Migration
 
