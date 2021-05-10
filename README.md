@@ -11,8 +11,8 @@ produce fresh, modern content for the game.
 
 The Cube Engine has meanwhile been succeeded by [Cube 2: Sauerbraten Engine](http://sauerbraten.org/) which in turn has been succeeded by [Tesseract Engine](http://tesseract.gg/). The basic assumption is that the artists and programmers in the community like the philosophy of the Cube engine(s) and want to move forward with that approach thus want to explore the capabilities of the Tesseract Engine.
 
-The purpose of the prototype is to explore how the technology of AssaultCube could be renewed by using the Tesseract Engine ([Tesseract revision 2491 / 2021-04-15](
- https://websvn.tuxfamily.org/revision.php?repname=tesseract%2Fmain&path=%2F&rev=2491&peg=2491])).
+The purpose of this tech prototype is to explore how the technology of AssaultCube could be renewed by using the Tesseract Engine ([Tesseract revision 2496 / 2021-05-07](
+ https://websvn.tuxfamily.org/revision.php?repname=tesseract%2Fmain&path=%2F&rev=2496&peg=2496])).
 
 ## DISCLAIMER ##
 
@@ -23,9 +23,46 @@ The purpose of the prototype is to explore how the technology of AssaultCube cou
 Follow the steps of this quick tour to get an impression of the technology.
 
 - Start assaultcube.bat / assaultcube.sh
-- Navigate to "Options" and then Resolution/Display and make sure you set the proper resolution and a high level of anti aliasing for proper gfx
+- Navigate to "Options" 
+  - Click on "Resolution" and make sure the proper resolution is set
+  - Click on "Display", tick "Fullscreen", set Anisotropic Filtering to 16x and FXAA to "ultra"
+  - /Display and make sure you set the proper resolution and a high level of anti aliasing for proper gfx
 - Navigate to "Map Browser" and click the map "ac_complex"
 - Walk around and look at the red bricks (parallax mapping)
 - Walk to the center square to see a few static player models 
 - Press T and type /thirdperson 2 to see an animated player model in action
 - Press T and type /addbot, then shoot the boot to see ragdoll physics in action
+
+# Changes
+
+This tech prototype contains the following changes compared to vanilla Tesseract:
+
+- import command for AC maps 
+- 1 map from AC v1
+- 49 textures from AC v1 with cheaply generated normalmaps/specmaps
+- 5 hudgun models from AC v1 - the sniper rifle has a cheaply generated normalmap/specmap and the other guns have none
+- 1 skeleton-animated player model with ragdoll physics support (some say they look more like Seaman than terrorists)
+- 3 test map models (static player models)
+- 1 game mode (insta i.e. OSOK with crosshair)
+- hudgun sway and hudgun position from AC v1
+- movement speed, crouch speed, straferunning from AC v1 (not perfect yet)
+- disabled colouring of player models
+- a little bit of AC theming for the UI
+
+# Assets Migration Path
+
+## Map Migration
+
+## Texture Migration
+
+## Hudgunmodel Migration
+
+## Playermodel Migration
+
+## Mapmodel Migration
+
+# Impact
+
+## Hardware Support
+
+AC v1 was marketed with the promise to run well on old computers. Most of the computers that were considered "old" back in 2004 do not exist anymore today. If we look at old computers by today's standards then Tessearct will support those when gfx settings are reduced. If the assets are too expensive computationally we may provide alternative assets for older computers. For example the default player model could have 10k polys while the alternate player model has 2k polys.
