@@ -100,6 +100,7 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 - Tesseract comes with a dynamic lighting system whereas AssaultCube v1 used a 2D lighting system. This means the imported lights do not make much sense - delete them with the command `/clearents light` 
 - The imported map will have ceiling cubes with a skybox texture - remove these cubes so that the sunlight reaches into the map
 - Place new [lights](http://sauerbraten.org/docs/editref.html#_light_) and [spotlights](http://sauerbraten.org/docs/editref.html#_spotlight_) in the map
+  - **Avoid overlapping lights**, even if there is a wall in between them. When rendering shadow maps, for every pixel of the shadowmap, it will sample every light that has a radius that reaches that pixel.
 - Tweak the sunlight with the commands [sunlight](http://sauerbraten.org/docs/editref.html#sunlight), [sunlightyaw](http://sauerbraten.org/docs/editref.html#sunlightyaw), [sunlightpitch](http://sauerbraten.org/docs/editref.html#sunlightpitch) and [sunlightscale](http://sauerbraten.org/docs/editref.html#sunlightscale)
 - Tweak the [ambient](http://sauerbraten.org/docs/editref.html#ambient) lighting and [skylight](sauerbraten.org/docs/editref.html#skylight)
 - Tweak diffuse global illumination with giscale, gidist, giaoscale as documented [here](http://tesseract.gg/README)
@@ -112,15 +113,18 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 
 ### Texture Migration ###
 
-AC v1 supported diffuse textures only whereas Tessearct supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex file per texture slot to define the types and that shader that is applied.
+AC v1 supported diffuse textures only whereas Tessearct supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex* file per texture slot to define the types and that shader that is applied.
 
 Examples:
-- [Bricks with Parallax Mapping](/media/texture/mayang/bricks_2.tex)
-- 
+- [Wood texture with Parallax Mapping](/media/texture/noctua/wood/planks02.tex)
+- [Bricks texture with Parallax Mapping and Specular Mapping](/media/texture/mayang/bricks_2.tex)
+- [Iron texture with Specular Mapping](/media/texture/noctua/metal/iron02.tex)
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
 ### Hudgunmodel Migration ###
+
+
 
 ### Playermodel Migration ###
 
@@ -141,17 +145,5 @@ AC v1 was marketed with the promise to run well on old computers. Most of the co
 
 ### Balancing Innovation and Tradition ###
 
-Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour fails. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. There needs to be a plan in which areas innovation is allowed an in which tradition is ensured. Example:
-
-|Area          |Release X     |Comments      |Release Y     |Comments      |
-|--------------|--------------|--------------|--------------|--------------|
-|Gameplay      |Tradition     |
-|Mood/Theme    |Tradition     |
-|Movement      |Tradition     |
-|Maps          |Tradition     |
-|Texture       |Tradition     |
-|Physics       |Innovate      |
-|Playermodels  |Innvoate      |
-|etc.          |etc.
-
+Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour fails. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. There needs to be a plan in which areas innovation is allowed an in which tradition is ensured.
 
