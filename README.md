@@ -72,18 +72,18 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 The tech prototype supports AssaultCube map format 10 from v1.3. Older formats are not supported.
  
-### Import ###
+#### Import ####
 - Place your map in the folder *\media\map\legacyformat*
 - Start the tech prototype and type `/importassaultcube <yourmap> <newmapsize>`
 - The map will be migrated and saved to */media/map/yourmap_imported.ogz* and */media/map/yourmap_imported.cfg*
 - To prevent accidential overrides by succint imports you should save it with a new name. Do not forget to manually copy the .cfg as well.
 
-### Geometry ###
+#### Geometry ####
 - Type E to enter edit mode, see also [basic editing](http://sauerbraten.org/docs/editing.html) and [editing binds](https://github.com/drian0/ac_tech_prototype/blob/master/config/default.cfg#L94)
 - You will notice that certain textures on corner cubes may be broken - you you will need to fix this manually
 - You will notice that certain heightfields that span more than one cube may be misaligned - you will need to fix this manually
 
-### Textures ###
+#### Textures ####
 - You will notice that textures that are not power-of-two might have a wrong offset
   - Example: After importing ac_complex check out the 3x3 wooden boxes on the streets with misfit textures (texture *makke/box_3.jpg*)
   - This can be fixed my changing the texture offset on the given surface/cube in editmode by pressing O or P and scrolling. Alternatively put [texscale](sauerbraten.org/docs/editref.html#texscale) in the *\*.tex* configuration of the given texture. 
@@ -96,7 +96,7 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
   - If the cfg contains a *fog* command, fix the fog level by multiplying the value by 976 e.g. `fog 488292 // fog 500 in ac v1`
   - If the cfg contains a *shadowyaw* command, remove it since it is not supported anymore
 
-### Lighting ###
+#### Lighting ####
 - Tesseract comes with a dynamic lighting system whereas AssaultCube v1 used a 2D lighting system. This means the imported lights do not make much sense - delete them with the command `/clearents light` 
 - The imported map will have ceiling cubes with a skybox texture - remove these cubes so that the sunlight reaches into the map
 - Place new [lights](http://sauerbraten.org/docs/editref.html#_light_) and [spotlights](http://sauerbraten.org/docs/editref.html#_spotlight_) in the map
@@ -105,7 +105,7 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 - Tweak the [ambient](http://sauerbraten.org/docs/editref.html#ambient) lighting and [skylight](sauerbraten.org/docs/editref.html#skylight)
 - Tweak diffuse global illumination with giscale, gidist, giaoscale as documented [here](http://tesseract.gg/README)
 
-### Notes ###
+#### Notes ####
 - To get started you should try to import ac_complex since its textures do already have some sort of normalmaps/specmaps.
 - Please note that some commands of the [Cube2:Sauerbraten editing reference](http://sauerbraten.org/docs/editref.html) have been advanced by Tesseract, check out the [Tesseract README](http://tesseract.gg/README) and [Tesseract Rending Pipeline Documentation](http://tesseract.gg/renderer.txt)
 - The lighting, specularity and normalmapping features of the engine **should be used wisely**. We should not create technology driven content. AC should retain its theme and should not get a metallic, overbright, overspecced look. The reason why things currently look that way is because it is a simple prototype. Please note that even the very first AC v1 maps (ac_complex and ac_desert) used zero to no colored lights probably for exactly that reason - technology should serve art and not vice versa.
@@ -113,7 +113,7 @@ The tech prototype supports AssaultCube map format 10 from v1.3. Older formats a
 
 ### Texture Migration ###
 
-AC v1 supported diffuse textures only whereas Tessearct supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex* file per texture slot to define the types and that shader that is applied.
+AC v1 supported diffuse textures only whereas Tesseract supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex* file per texture slot to define the types and that shader that is applied.
 
 Examples:
 - [Wood texture with Parallax Mapping](/media/texture/noctua/wood/planks02.tex)
@@ -122,9 +122,20 @@ Examples:
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
+All existing AC v1 textures should be migrated to this new configuration and should have *at least have a normalmap*. Most likely there is no point in having some texture remain diffuse-only.
+
 ### Hudgunmodel Migration ###
 
+The weapons shown in the head-up-display should have at least a *normalmap* and a *specmap*.
 
+Example:
+- [Sniper Rifle](/media/model/hudgun/sniper/md3.cfg)
+
+Notes:
+- `md3load <model>` loads a given md3 file
+- `md3skin <mesh> <skin> <mask>` applies a diffuse texture *skin* to the *mesh* with a given *mask*. The *mask* is an ordinary RGB picture where the R(ed) channel stores a specular map, the G(reen) channel stores glow map and the B(blue) channel stores environment map.
+- `md3bumpmap <mesh> <normalmap>` applies a *normalmap* to the *mesh*
+- `md3spec <mesh> -1` disables specularity for the given *mesh*. This is a useful shortcut so that you do not need to provide a *mask* with disabled specularity.
 
 ### Playermodel Migration ###
 
