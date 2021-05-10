@@ -126,10 +126,17 @@ All existing AC v1 textures should be migrated to this new configuration and sho
 
 ### Hudgunmodel Migration ###
 
-The weapons shown in the head-up-display should have at least a *normalmap* and a *specmap*.
+<img src="/doc/hudgun.PNG" width="50%" alt="Tech Prototype: ac_complex">
+
+The weapons shown in the head-up-display should have at least a good *normalmap* and a *specmap*. The hands must not have any specularity.
+
+On top of that, the following optimizations are applied as well:
+ - models should have more polygons so that the round surfaces like barrel and scope are smoothened.
+ - the existing skin textures contain highlighted areas to simulate specularity, this should be removed because this should now be done via spemap
+ - the skins textures could be re-created in high-res however the look of the hudgun should generally be very close to v1 due to [tradition](#Balancing-Innovation-and-Tradition)
 
 Example:
-- [Sniper Rifle](/media/model/hudgun/sniper/md3.cfg)
+- [Sniper Rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
 
 Notes:
 - `md3load <model>` loads a given md3 file
