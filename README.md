@@ -53,6 +53,27 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 ## Map Migration
 
+The tech prototype supports AssaultCube map format 10 from v1.3. Oder formats are not supported.
+ 
+ Procedure:
+- Place your map in the folder *\media\map\legacyformat*
+- Start the tech prototype and type `/importassaultcube <yourmap> <newmapsize>`
+- The map will be migrated and saved to *\media\map\yourmap_imported.ogz* and *\media\map\yourmap_imported.cfg*
+  - To prevent accidential overrides by succint imports you should save it with a new name (don't forget to manually copy the .cfg as well)
+- Type E to enter edit mode, see also [basic editing](http://sauerbraten.org/docs/editing.html) and [editing binds](https://github.com/drian0/ac_tech_prototype/blob/master/config/default.cfg#L94)
+- You will notice that certain textures on corner cubes may be broken, you you will need to fix this manually
+- You will notice that certain heightfields span more than one cube may be misaligned, you will need to fix this manually
+- Tesseract comes with a dynamic lighting system whereas AssaultCube v1 used a 2D lighting system this means the imported lights do not make much sense - delete them with the command `/clearents light` 
+- Place new [lights](http://sauerbraten.org/docs/editref.html#_light_) and [spotlights](http://sauerbraten.org/docs/editref.html#_spotlight_) in the map
+- The imported map will have ceiling cubes with a skybox texture - remove these cubes so that the sunlight reaches into the map
+- Tweak the sunlight with the commands [sunlight](http://sauerbraten.org/docs/editref.html#sunlight), [sunlightyaw](http://sauerbraten.org/docs/editref.html#sunlightyaw), [sunlightpitch](http://sauerbraten.org/docs/editref.html#sunlightpitch) and [sunlightscale](http://sauerbraten.org/docs/editref.html#sunlightscale)
+- Tweak the [ambient](http://sauerbraten.org/docs/editref.html#ambient) lighting and [skylight](sauerbraten.org/docs/editref.html#skylight)
+- Tweak diffuse global illumination with giscale, gidist, giaoscale as documented [here](http://tesseract.gg/README)
+
+Notes:
+- To get started you should try to import ac_complex since its textures do already have some sort of normalmaps/specmaps.
+- Please note that some commands of the [Cube2:Sauerbraten editing reference](http://sauerbraten.org/docs/editref.html) have been advanced by Tesseract, check out the [Tesseract README](http://tesseract.gg/README) and [Tesseract Rending Pipeline Documentation](http://tesseract.gg/renderer.txt)
+
 ## Texture Migration
 
 ## Hudgunmodel Migration
