@@ -116,6 +116,8 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 ### Texture Migration ###
 
+<img src="/doc/normalmap.png" width="50%">
+
 AC v1 supported diffuse textures only whereas Tesseract supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex* file per texture slot to define the types and that shader that is applied.
 
 Examples:
