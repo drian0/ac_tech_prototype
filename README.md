@@ -199,7 +199,7 @@ Minimal:
 - The AC v1 playermodels should not be retained. They stem from the Quake II era an d were already outdated when developmen on AC v1 began. 
 - The replacement should have the same style that means special forces vs. rebels.
 - Faces should be covered as in AC v1 - makes it less violent.
-- Use freely available player models if there are any suitable ones.
+- Use freely available player models if there are any suitable ones. Examples: [terrorist](https://sketchfab.com/3d-models/terrorist-ccce1abd9086451da3bed9ec30c82c37) and [thugs](https://sketchfab.com/3d-models/thugs-ee6139403e5c4840a93c63b66340a781)
 - Reuse the existing skeletal animation of the Tesseract "bones" playermodel (requires a manual migration)
 
 Optimal:
@@ -213,8 +213,37 @@ Static player models can be migrated to utilize the skeleton of the Tesseract "b
 
 Example:
 - Install latest Blender
-- Install [MD5 addon](https://github.com/KozGit/Blender-2.8-MD5-import-export-addon) 
-- Import the 
+- Install [MD5 addon] for Blender (https://github.com/KozGit/Blender-2.8-MD5-import-export-addon) 
+- Download the [thugs](https://sketchfab.com/3d-models/thugs-ee6139403e5c4840a93c63b66340a781) playermodels
+- Import the \**.fbx* file into Blender
+- Delete one of the players so that only one remains
+- Place the remaining player at the center of the coordinate system
+- Open a new instance of Blender and import the [mesh file](https://github.com/drian0/ac_tech_prototype/blob/master/media/model/player/bones/model.md5mesh) of the bones playermodel using the previously installed addon
+- If you run into issues during the import open the mesh file with a text editor and ensure that after each `mesh {` there are at least these lines:
+`
+  // meshes: hat1
+  shader "hat1"
+  numverts 1234
+`
+- Select the skeleton (Armature) and copy it
+- In the first blender instance where the player resides paste the skeleton 
+- Note that the player and skeleton are of different scale and therefore do not fit, also there might be other axis or offsets
+- Move, rotate and scale the player so that the player aligns somewhat the pasted skeleton
+- In Blender Pose Mode rotate the bones (based on the existing skeleton) so that the vertices fit perfectly to the new skeleton, do this perfectly including all finger bones
+  - do not move or squeeze the bones - only rotate the angles in order to keep the ratio   
+- In Weight Paint Mode select a bone from the existing skeleton then apply that weight to the bone of the new skeleton
+  - Do this for all bones until all vertices of the player are assigned to the new skeleton
+- Apply the newly configured pose frome the Pose Mode to the Edit Mode [with this approach](https://nixart.wordpress.com/2013/03/28/modifying-the-rest-pose-in-blender/)
+- Export the model to an md5 mesh file using the addon
+- Open the file md5 mesh file with a text editor and ensure that all objects are contained and also ensure that after each `mesh`there are at least these lines:
+`
+  // meshes: hat1
+  shader "hat1"
+  numverts 1234
+`
+- Import the first animation file of the bones player model using the addon (for example: run)
+- Export the animation file using the addon - this ensure that the animation is compatible to the mesh (ordering of joints/etc. matters and so we need to import/export)
+  - Do this for all animation files 
 
 ### Mapmodel Migration ###
 
