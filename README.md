@@ -4,7 +4,7 @@
 
 <img src="/doc/screenshot_ac_complex_800.png" width="50%" alt="Tech Prototype: ac_complex"><img src="/doc/screenshot_ac_complex2_800.png" width="50%" alt="Tech Prototype: ac_complex">
 
-Development of the first-person-shooter game AssaultCube ("AC") began in 2004 and was first released in 2006. It is based on the [Cube (1) Engine](http://cubeengine.com/). One of the current challenges is the fact that AssaultCube can no longer live up to the expectations of todays players in terms of visual appearance. It may not be possible to make AssaultCube look like a 2021 AAA game and compete with commercial games but it is realistic to catch up significantly.
+Development of the first-person-shooter game AssaultCube ("AC") began in 2004 and was first released in 2006. It is based on the [Cube (1) Engine](http://cubeengine.com/). One of the current challenges is the fact that AssaultCube can no longer live up to the expectations of todays players in terms of visual appearance. It may not be possible to make AssaultCube look like a 2021 AAA game and compete with commercial games but it is realistic to catch up a bit.
 
 It is safe to say that all the potential of the Cube Engine has been fully exploitet. It is not possible to make the game look better with this engine. The artists have done everything possible to use the available tools to the max and they achieved outstanding results considering the technological limits. 
 
@@ -47,8 +47,8 @@ Follow the steps of this quick tour to get an impression of the technology.
 These steps should give you a first impression. If you would like to gain a deeper understanding please consult the following resources:
 
 1. [Changes](#changes)
-2. [Asset Migration Path](#asset-migration-path)
-3. [Findings](#findings)
+2. [Findings](#findings)
+3. [Asset Migration Path](#asset-migration-path)
 
 ## Changes ##
 
@@ -66,6 +66,24 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 - a little bit of AC theming for the UI
 - import command for AC v1 maps 
 
+## Findings ##
+
+### Feasibility ###
+
+Taking into account a) the capabilities of the new technology b) the capabilities of the development team and c) support of the AC community it is safe to say that renewing the technology stack of AssaultCube with Tesseract is feasible. The mission could be structured as follows:
+
+- *People.* There should be a group of *at least* one developer, one artist and one tester than can focus solely on the first release with Tesseract without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for the duration of the first release.
+- *Methodology.* The first release (*minimum playable product*) should have a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex.
+- *Hardware Support* 
+
+### Hardware Support ###
+
+AC v1 was marketed with the promise to run well on old computers. Most of the computers that were considered "old" back in 2004 do not exist anymore today. If we look at old computers by today's standards then Tessearct will support those when gfx settings are reduced.
+
+### Balancing Innovation and Tradition ###
+
+Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour fails. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. There needs to be a plan in which areas innovation is allowed an in which tradition is ensured.
+
 ## Asset Migration Path ##
 
 ### Map Migration ###
@@ -74,8 +92,12 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 #### Guidelines ####
 
+Minimal:
 - The lighting, specularity and normalmapping features of the engine **should be used wisely**. We should not create technology driven content. AC should retain its theme and should not get a metallic, overbright, overspecced look. The reason why things currently look that way is because it is a simple prototype. Please note that even the very first AC v1 maps (ac_complex and ac_desert) used zero to no colored lights probably for exactly that reason - technology should serve art and not vice versa.
 - There should be an approach for official maps: Existing official maps should be migrated in a way that preserves the original textures (with normal/specmaps) but textures should not be replaced. Lighting should be done in a way that comes close to the v1 look. If the author of a map wishes to further improve the map (geometry/textures) it may be better to create a new version (ac_complex and ac_complex_classic). This is important to remain true to the original look as described in [community split](#community-split).
+
+Optimal:
+- 
 
 #### Import ####
 - The tech prototype supports AssaultCube map format 10 from v1.3. Older formats are not supported.
@@ -118,6 +140,16 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 <img src="/doc/normalmap.png" width="50%">
 
+#### Guidelines ####
+
+Minimal:
+- All existing AC v1 textures should be migrated to this new configuration and should *at least have a normalmap*. Most likely there is no point in having some texture remain diffuse-only.
+
+Optimal:
+- The textures should be replaced by modern high-res textures.
+
+#### Procedure ####
+
 AC v1 supported diffuse textures only whereas Tesseract supports textures slots with eight different types: primary diffuse, secondary diffuse, decals, normal map, glow map, specularity map, depth map and environment map. There should be a *\*.tex* file per texture slot to define the types and that shader that is applied.
 
 Examples:
@@ -127,18 +159,28 @@ Examples:
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
-All existing AC v1 textures should be migrated to this new configuration and should have *at least have a normalmap*. Most likely there is no point in having some texture remain diffuse-only.
-
 ### Hudgunmodel Migration ###
 
 <img src="/doc/hudgun.PNG" width="50%" alt="Tech Prototype: ac_complex">
 
-The weapons shown in the head-up-display should have at least a good *normalmap* and a *specmap*. The hands must not have any specularity. The look of the weapons should generally be very close to v1 due to [tradition](#Balancing-Innovation-and-Tradition).
+#### Guidelines ####
 
-On top of that the following optimizations could be applied as well:
+Minimal:
+- The weapons shown in the head-up-display should have at least a good *normalmap* and a *specmap*. 
+- The hands must not have any specularity. 
+- The look of the weapons should generally be very close to v1 due to [tradition](#Balancing-Innovation-and-Tradition).
+
+Optimal:
  - models could have more polygons so that the round surfaces like barrel and scope are smoothened.
  - the existing skin textures contain highlighted areas to simulate specularity, this could be removed because this should now be done via spemap instead
  - the skins textures could be re-created in high-res
+ - animations could be added such as reload select/deselect weapon 
+
+### Worldgunmodel Migration ####
+
+Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "hands".
+
+#### Procedure ####
 
 Example:
 - [Sniper Rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
@@ -151,22 +193,28 @@ Notes:
 
 ### Playermodel Migration ###
 
+#### Guidelines ####
+
+Minimal:
+- The AC v1 playermodels should not be retained. They stem from the Quake II era an d were already outdated when developmen on AC v1 began. 
+- The replacement should have the same style that means special forces vs. rebels.
+- Faces should be covered as in AC v1 - makes it less violent.
+- Use freely available player models if there are any suitable ones.
+- Reuse the existing skeletal animation of the Tesseract "bones" playermodel (requires a manual migration)
+
+Optimal:
+- Customize the shape of the freely available player model to fit the AC style (for example, remove beards and hat of "Seaman" playermodels and add a rebel-like hoodie).
+  - And/Or: Customize the skin of the freely available player models (for example, add "CLA" or "RVSF" tags).
+- Do not reuse the existing skeletal animation of the tesseract "bones" playermodel but create custom animations
+
+#### Procedure ####
+
+Static player models can be migrated to utilize the skeleton of the Tesseract "bones" playermodel. This allows to re-use the existing animations (run, jump, ..) and allows to re-use the existing ragdoll definition. 
+
+Example:
+- Install latest Blender
+- Install [MD5 addon](https://github.com/KozGit/Blender-2.8-MD5-import-export-addon) 
+- Import the 
+
 ### Mapmodel Migration ###
-
-## Findings ##
-
-### Feasibility ###
-
-Taking into account a) the capabilities of the new technology b) the capabilities of the development team and c) support of the AC community it is safe to say that renewing the technology stack of AssaultCube with Tesseract is feasible. The mission could be structured as follows:
-
-- *People.* There should be a group of *at least* one developer, one artist and one tester than can focus solely on the first release with Tesseract without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for the duration of the first release.
-- *Methodology.* The first release (*minimum playable product*) should have a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex.
-
-### Hardware Support ###
-
-AC v1 was marketed with the promise to run well on old computers. Most of the computers that were considered "old" back in 2004 do not exist anymore today. If we look at old computers by today's standards then Tessearct will support those when gfx settings are reduced. If the assets are too expensive computationally we may provide alternative assets for older computers. For example the default player model could have 10k polys while the alternate player model has 2k polys.
-
-### Balancing Innovation and Tradition ###
-
-Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour fails. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. There needs to be a plan in which areas innovation is allowed an in which tradition is ensured.
 
