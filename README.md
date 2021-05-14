@@ -76,13 +76,9 @@ Taking into account a) the capabilities of the new technology b) the capabilitie
 
 <img src="/doc/movingforward.jpg" width="50%">
 
-The first release (*minimum playable product*) should have a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex. This first release should not be a "demo" or a "prototype" but it sould be a full release that is meant to be played by people. It is a game of its own and deserves its own name such as "AssaultCube: Sniper Wars", "AC: Sniper Battle" or similar.
+The first phase should be about publishing a game (*minimum playable product*) with a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex. This first release should not be a "demo" or a "prototype" but instead it sould be a full release that is meant to be played by people. It is a game of its own and deserves its own name such as "AssaultCube: Sniper Wars", "AC: Sniper Battle" or similar. 
 
-There should be a group of *at least* one developer, one artist and one tester than can focus solely on the first release with Tesseract without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for the duration of the first release.
-
-### Hardware Support ###
-
-AC v1 was marketed with the promise to run well on old computers. Most of the computers that were considered "old" back in 2004 do not exist anymore today. If we look at old computers by today's standards then Tessearct will support those when gfx settings are reduced.
+There should be a group of at least one developer, one artist and one tester than can focus solely on this first product without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for this duration. The knowledge gathered during this process will then be used to conceptualize and implement AssaultCube II in the second phase.
 
 ### Balancing Innovation and Tradition ###
 
@@ -91,6 +87,10 @@ Renewing the tech stack of a game poses the inherent risk of a community split. 
 Gameplay logic could be partially retained: Keeping the same weapon characteristics as in AC v1 but tackling the problem of [everybody using subgun](https://github.com/assaultcube/AC/issues/295). The problem could be resolved via two opposing directions: 
 - Scarcity of primary weapons: Players start with pistol only and need to find primary weapons on the map. The weapons are shown on the minimap. Dead players drop their primary weapon and it can be picked up by others. Players can voluntarily drop their primary weapon for tactical reasons.
 - Abundance of primary weapons: Players carry *all* primary weapons at the same time. The primary ammo pickup will equip all weapons. Primary ammo pickup only adds a fraction of the ammo compared to AC v1 so that players are forced to switch weapons often and use ammo more strategically.
+
+### Hardware Support ###
+
+AC v1 was marketed with the promise to run well on old computers. Most of the computers that were considered "old" back in 2004 do not exist anymore today. If we look at old computers by today's standards then Tessearct will support those when gfx settings are reduced.
 
 ## Asset Migration Path ##
 
@@ -228,12 +228,12 @@ Example:
 - Place the remaining player at the center of the coordinate system
 - Open a new instance of Blender and import the [mesh file](https://github.com/drian0/ac_tech_prototype/blob/master/media/model/player/bones/model.md5mesh) of the bones playermodel using the previously installed addon
 - If you run into issues during the import open the mesh file with a text editor and ensure that after each `mesh {` there are at least these lines:
-- 
-`
-  // meshes: hat1
-  shader "hat1"
-  numverts 1234
-`
+
+// meshes: hat1
+
+shader "hat1"
+
+numverts 1234
 
 - Select the skeleton (Armature) and copy it
 - In the first blender instance where the player resides paste the skeleton 
@@ -241,17 +241,17 @@ Example:
 - Move, rotate and scale the player so that the player aligns somewhat the pasted skeleton
 - In Blender Pose Mode rotate the bones (based on the existing skeleton) so that the vertices fit perfectly to the new skeleton, do this perfectly including all finger bones
   - do not move or squeeze the bones - only rotate the angles in order to keep the ratio   
-- In Weight Paint Mode select a bone from the existing skeleton then apply that weight to the bone of the new skeleton
-  - Do this for all bones until all vertices of the player are assigned to the new skeleton
+- Vertex Groups are mapped to Armature Bones by name, this means you need to rename the Vertex Groups match the bone names of the new skeleton
+  - There are bones in the new skeleton that did not exist in the existing skeleton so you need to manually configure them in Weight Paint mode
 - Apply the newly configured pose frome the Pose Mode to the Edit Mode [with this approach](https://nixart.wordpress.com/2013/03/28/modifying-the-rest-pose-in-blender/)
 - Export the model to an md5 mesh file using the addon
 - Open the file md5 mesh file with a text editor and ensure that all objects are contained and also ensure that after each `mesh`there are at least these lines:
 
-`
-  // meshes: hat1
-  shader "hat1"
-  numverts 1234
-`
+// meshes: hat1
+
+shader "hat1"
+
+numverts 1234*
 
 - Import the first animation file of the bones player model using the addon (for example: run)
 - Export the animation file using the addon - this ensure that the animation is compatible to the mesh (ordering of joints/etc. matters and so we need to import/export)
@@ -259,3 +259,4 @@ Example:
 
 ### Mapmodel Migration ###
 
+Similar to playermodel migration but without animations.
