@@ -70,11 +70,15 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 ### Feasibility ###
 
-Taking into account a) the capabilities of the new technology b) the capabilities of the development team and c) support of the AC community it is safe to say that renewing the technology stack of AssaultCube with Tesseract is feasible. The mission could be structured as follows:
+Taking into account a) the capabilities of the new technology b) the capabilities of the development team and c) support of the AC community it is safe to say that renewing the technology stack of AssaultCube with Tesseract is feasible. 
 
-- *People.* There should be a group of *at least* one developer, one artist and one tester than can focus solely on the first release with Tesseract without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for the duration of the first release.
-- *Methodology.* The first release (*minimum playable product*) should have a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex.
-- *Hardware Support* 
+### Methodology  ###
+
+<img src="/doc/movingforward.jpg" width="50%">
+
+The first release (*minimum playable product*) should have a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex. This first release should not be a "demo" or a "prototype" but it sould be a full release that is meant to be played by people. It is a game of its own and deserves its own name such as "AssaultCube: Sniper Wars", "AC: Sniper Battle" or similar.
+
+There should be a group of *at least* one developer, one artist and one tester than can focus solely on the first release with Tesseract without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for the duration of the first release.
 
 ### Hardware Support ###
 
@@ -82,7 +86,11 @@ AC v1 was marketed with the promise to run well on old computers. Most of the co
 
 ### Balancing Innovation and Tradition ###
 
-Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour fails. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. There needs to be a plan in which areas innovation is allowed an in which tradition is ensured.
+Renewing the tech stack of a game poses the inherent risk of a community split. Some will keep playing the old version while others move on to the new version. If too many people stick to the old version the endeavour fails. Therefore it is important to 'worship tradition'. This is especially crucial in the first releases or first months/years. The other risk is that if tradition is worshipped too much then there won't be sufficient innovation to attract new people - putting the whole mission at risk. There needs to be a plan in which areas innovation is allowed an in which areas tradition is ensured. For example the longterm idea could be to retain movement/physics/weapon strength the way it was in AC v1 while replacing all assets to achieve a similar visual realism as *Call of Duty: Warzone*. Sidenote: It may not be realistic to actually achieve this visual realism but it is worth aiming at it. 
+
+Gameplay logic could be partially retained: Keeping the same weapon characteristics as in AC v1 but tackling the problem of [everybody using subgun](https://github.com/assaultcube/AC/issues/295). The problem could be resolved via two opposing directions: 
+- Scarcity of primary weapons: Players start with pistol only and need to find primary weapons on the map. The weapons are shown on the minimap. Dead players drop their primary weapon and it can be picked up by others. Players can voluntarily drop their primary weapon for tactical reasons.
+- Abundance of primary weapons: Players carry *all* primary weapons at the same time. The primary ammo pickup will equip all weapons. Primary ammo pickup only adds a fraction of the ammo compared to AC v1 so that players are forced to switch weapons often and use ammo more strategically.
 
 ## Asset Migration Path ##
 
