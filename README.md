@@ -102,10 +102,12 @@ AC v1 was marketed with the promise to run well on old computers. Most of the co
 
 Minimal:
 - The lighting, specularity and normalmapping features of the engine **should be used wisely**. We should not create technology driven content. AC should retain its theme and should not get a metallic, overbright, overspecced look. The reason why things currently look that way is because it is a simple prototype. Please note that even the very first AC v1 maps (ac_complex and ac_desert) used zero to no colored lights probably for exactly that reason - technology should serve art and not vice versa.
-- There should be an approach for official maps: Existing official maps should be migrated in a way that preserves the original textures (with normal/specmaps) but textures should not be replaced. Lighting should be done in a way that comes close to the v1 look. If the author of a map wishes to further improve the map (geometry/textures) it may be better to create a new version (ac_complex and ac_complex_classic). This is important to remain true to the original look as described in [community split](#community-split).
+- All used textures should have at least a normalmap/specmap.
 
 Optimal:
-- 
+- Remove all old textures and replace them by high-res textures.
+- Add a lot of geometric details to the maps.
+
 
 #### Import ####
 - The tech prototype supports AssaultCube map format 10 from v1.3. Older formats are not supported.
@@ -119,6 +121,7 @@ Optimal:
 - After import, type E to enter edit mode, see also [basic editing](http://sauerbraten.org/docs/editing.html) and [editing binds](https://github.com/drian0/ac_tech_prototype/blob/master/config/default.cfg#L94)
 - You will notice that certain textures on corner cubes may be broken - you you will need to fix this manually
 - You will notice that certain heightfields that span more than one cube may be misaligned - you will need to fix this manually
+- Tesseract allows for fine-grained cubes and so you should add more fine gemoetric details to the map. This is especially important once new high-res textures are imported. It looks strange to see high-res textures on old clunky geometry. No more long monotonous flat walls/floors.
 
 #### Lighting ####
 - After improving geometry, review the lights in the map
