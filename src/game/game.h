@@ -93,9 +93,9 @@ struct gameentity : extentity
 {
 };
 
-enum { GUN_KNIFE = 0, GUN_PISTOL, GUN_CARBINE, GUN_SHOTGUN, GUN_SUBGUN, GUN_SNIPER, GUN_ASSAULT, GUN_GRENADE, GUN_AKIMBO, NUMGUNS };
+enum { GUN_KNIFE = 0, GUN_PISTOL, GUN_CARBINE, GUN_SHOTGUN, GUN_SUBGUN, GUN_SNIPER, GUN_SNIPER2, GUN_ASSAULT, GUN_GRENADE, GUN_AKIMBO, NUMGUNS };
 enum { ACT_IDLE = 0, ACT_SHOOT, ACT_MELEE, NUMACTS };
-enum { ATK_KNIFE = 0, ATK_PISTOL, ATK_CARBINE, ATK_SHOTGUN, ATK_SUBGUN, ATK_SNIPER, ATK_ASSAULT, ATK_GRENADE, ATK_AKIMBO, NUMATKS };
+enum { ATK_KNIFE = 0, ATK_PISTOL, ATK_CARBINE, ATK_SHOTGUN, ATK_SUBGUN, ATK_SNIPER, ATK_SNIPER2, ATK_ASSAULT, ATK_GRENADE, ATK_AKIMBO, NUMATKS };
 
 #define validgun(n) ((n) >= 0 && (n) < NUMGUNS)
 #define validact(n) ((n) >= 0 && (n) < NUMACTS)
@@ -109,8 +109,7 @@ enum
     M_DEMO       = 1<<4,
     M_LOCAL      = 1<<5,
     M_LOBBY      = 1<<6,
-    M_RAIL       = 1<<7,
-    M_PULSE      = 1<<8
+    M_INSTA       = 1<<7
 };
 
 static struct gamemodeinfo
@@ -122,7 +121,7 @@ static struct gamemodeinfo
 {
     { "demo", "Demo", M_DEMO | M_LOCAL, NULL},
     { "edit", "Edit", M_EDIT, "Cooperative Editing:\nEdit maps with multiple players simultaneously." },
-    { "asak", "ASAK", M_LOBBY | M_RAIL, "Another shot another kill:\nFrag everyone with sniper rifles to score points. Sniper rifles do have crosshairs. Traditional instagib." },
+    { "insta", "Insta", M_LOBBY | M_INSTA, "Instagib:\nFrag everyone with sniper rifles to score points. Sniper rifles do have crosshairs." },
 };
 
 #define STARTGAMEMODE (-1)
@@ -136,7 +135,7 @@ static struct gamemodeinfo
 #define m_ctf          (m_check(gamemode, M_CTF))
 #define m_teammode     (m_check(gamemode, M_TEAM))
 #define isteam(a,b)    (m_teammode && a==b)
-#define m_rail         (m_check(gamemode, M_RAIL))
+#define m_insta        (m_check(gamemode, M_INSTA))
 #define m_pulse        (m_check(gamemode, M_PULSE))
 
 #define m_demo         (m_check(gamemode, M_DEMO))
@@ -300,6 +299,7 @@ static const struct attackinfo { int gun, action, anim, vwepanim, hudanim, sound
     { GUN_SHOTGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SHOTGUN,  S_SHOTGUN, 880, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 9, 9 },
     { GUN_SUBGUN,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SUBGUN,  S_SUBGUN, 80, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 1, 2 },
     { GUN_SNIPER,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SNIPER,  S_SNIPER, 1500, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 4, 4 },
+    { GUN_SNIPER2,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_SNIPER,  S_SNIPER, 1500, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 4, 4 },
     { GUN_ASSAULT,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_ASSAULT,  S_ASSAULT, 120, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 0, 2 },
     { GUN_GRENADE,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_GRENADEPULL,  S_GRENADEPULL, 650  , 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 3, 1 },
     { GUN_AKIMBO,  ACT_SHOOT, ANIM_SHOOT, ANIM_VWEP_SHOOT, ANIM_GUN_SHOOT, S_PISTOL,  S_PISTOL, 80, 1, 0, 0,    0, 30, 2048, 1, 5000,  0, 0, 0, 6, 5 },
@@ -313,6 +313,7 @@ static const struct guninfo { const char *name, *file, *vwep; int attacks[NUMACT
     { "shotgun", "shotgun", "worldgun/railgun", { -1, ATK_SHOTGUN }, },
     { "subgun", "subgun", "worldgun/railgun", { -1, ATK_SUBGUN }, },
     { "sniper", "sniper", "worldgun/railgun", { -1, ATK_SNIPER }, },
+    { "sniper2", "sniper2", "worldgun/sniper2", { -1, ATK_SNIPER2 }, },
     { "assault", "assault", "worldgun/railgun", { -1, ATK_ASSAULT }, },
     { "grenade", "grenade", "worldgun/railgun", { -1, ATK_GRENADE }, },
     { "akimbo", "akimbo", "worldgun/railgun", { -1, ATK_AKIMBO }, },
@@ -349,15 +350,10 @@ struct gamestate
 
     void spawnstate(int gamemode)
     {
-        if(m_rail)
+        if(m_insta)
         {
-            gunselect = GUN_ASSAULT;
-            ammo[GUN_ASSAULT] = 1;
-        }
-        else if(m_pulse)
-        {
-            gunselect = GUN_PISTOL;
-            ammo[GUN_PISTOL] = 1;
+            gunselect = GUN_SNIPER2;
+            ammo[GUN_SNIPER2] = 100;
         }
         else if(m_edit)
         {

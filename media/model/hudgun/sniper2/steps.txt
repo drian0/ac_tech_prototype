@@ -1,0 +1,8 @@
+- press A and del
+- import fbx
+- object mode, add armature
+- click sniper, base
+- click modifier properties, add armature-> object=Armature
+- click sniepr, baser
+- click object data propertites, md5 export setup> bone layer = 1
+- object parent->with automated weights

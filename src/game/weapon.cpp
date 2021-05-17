@@ -526,12 +526,17 @@ namespace game
                 break;
 
             case ATK_SNIPER:
+            case ATK_SNIPER2:
                 particle_splash(PART_SPARK, 200, 250, to, 0x222222, 0.45f);
                 particle_flare(hudgunorigin(gun, from, to, d), to, 500, PART_RAIL_TRAIL, 0xFFFFE6, 0.5f);
                 if(d->muzzle.x >= 0) particle_flare(d->muzzle, d->muzzle, 50, PART_RAIL_MUZZLE_FLASH, 0xFFFFE6, 2.75f, d);
                 adddynlight(hudgunorigin(gun, d->o, to, d), 35, vec(1.0f, 1.0f, 230.0f/255.0f), 75, 75, DL_FLASH, 0, vec(0, 0, 0), d);
+                
+                // shots now originate directly from the muzze to have more realistic visuals this means from==d->muzzle 
+                // this might be a stupid idea but let us try this for now
+                //particle_trail(PART_SMOKE, 500, d->muzzle, to);
                 particle_trail(PART_SMOKE, 500, from, to);
-                //particle_trail(PART_SMOKE, 500, d->muzzle, to); // fixmeah
+
                 if(!local) railhit(from, to);
                 break;
 
