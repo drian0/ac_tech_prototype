@@ -74,7 +74,7 @@ Taking into account a) the capabilities of the new technology b) the capabilitie
 
 ### Weaknesses ### 
 
-Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) and [GLTF](https://en.wikipedia.org/wiki/GlTF) is not supported and it is not foreseeable that this functionality will be added to the engine in the near future (!) This means that the import of modern assets (such as models/textures from sketchfab.com) is not straightforward plus even if the import works there is a quality loss. This is a considerable downside.
+Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) and [GLTF](https://en.wikipedia.org/wiki/GlTF) is not supported and it is not foreseeable that this functionality will be added to the engine in the near future. This means that the import of modern assets (such as models/textures from sketchfab.com) is not straightforward plus even if the import works there is a quality loss. The 'advantage' is that without PBR the engine will run on old machines and/or support large maps - plus the file size of the textures are not as big as in AAA games.
 
 ### Methodology  ###
 
@@ -174,6 +174,29 @@ Examples:
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
+If you download new [PBR textures](https://learnopengl.com/PBR/Theory) from the web you need to convert them first to conventional textures:
+
+- COLOR + AO -> DIFFUSE
+   - blend the COLOR texture with the AO texture using 'multiply' blending function 
+   - save this diffuse texture as \**color.png*
+   - GIMP: To do this in gimp, open the first texture, paste the second texture as new layer, edit layer attributes and set to mode to "Multiply", flatten image, export to png
+- ROUGHNESS + METALLIC -> SPECULAR MAP
+   - blend the ROUGHNESS texture in such a way with the METALLIC texture so that the dark/black areas of the METALLC texture remain dark
+   - compose the resulting grayscale image into the red channel of a new image, keep the green and blue channels empty/white
+   - save this specular map as \**specular.png*
+   - GIMP: To do this in gimp, open the first texture, paste the second texture as new layer, edit layer attributes and set to mode to "Darken Only", flatten image, export to png
+- NORMAL MAP -> ~NORMAL MAP
+   - Tesseract requires normal maps to have white faces to be down and dark faces to be up in the green channel
+   - If this is not the case yet, simply invert the green channel of the texture 
+   - save the normal map as \**normal.png*
+   - GIMP: To do this in gimp, open the texture, Colors->Components->Decompose, select green layer, Colors->Invert, Colors->Components->Compose, export to png
+ - Model Skins
+   - If you want to apply the texture to a model skin e.g. with the `md3skin` or `md5skin` or `iqmskin` commands then you need to encode the specular map into a mask
+   - The mask is encoded as follows: red channel -> specular map, green channel -> glow map, blue channel -> environment map
+   - GIMP: To do this in gimp, open the specular map (\**specular.png*) then add two additional empty layers, Color->Components-Compose, chose initial layer as 'green', export to png
+ - Examples:
+   - Sniper2 rifle PBR textures migrated to conventional textures: [Source](/media/model/hudgun/sniper2/originalpackage/textures) -> [Target](/media/model/hudgun/sniper2/) 
+
 ### Hudgunmodel Migration ###
 
 <img src="/doc/hudgun.PNG" width="50%" alt="Tech Prototype: ac_complex">
@@ -191,20 +214,21 @@ Optimal:
  - the skins textures could be re-created in high-res
  - animations could be added such as reload select/deselect weapon 
 
-### Worldgunmodel Migration ####
-
-Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "hands".
-
 #### Procedure ####
 
 Example:
-- [Sniper Rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
+- [Sniper rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
+- [Sniper2 rifle iqm config file](/media/model/hudgun/sniper2/iqm.cfg)
 
 Notes:
 - `md3load <model>` loads a given md3 file
 - `md3skin <mesh> <skin> <mask>` applies a diffuse texture *skin* to the *mesh* with a given *mask*. The *mask* is an ordinary RGB picture where the R(ed) channel stores a specular map, the G(reen) channel stores glow map and the B(blue) channel stores environment map.
 - `md3bumpmap <mesh> <normalmap>` applies a *normalmap* to the *mesh*
 - `md3spec <mesh> -1` disables specularity for the given *mesh*. This is a useful shortcut so that you do not need to provide a *mask* with disabled specularity.
+
+### Worldgunmodel Migration ####
+
+Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "hands".
 
 ### Playermodel Migration ###
 
@@ -266,4 +290,4 @@ numverts 1234*
 
 ### Mapmodel Migration ###
 
-Similar to playermodel migration but without animations.
+TODO.
