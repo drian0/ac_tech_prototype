@@ -74,7 +74,7 @@ Taking into account a) the capabilities of the new technology b) the capabilitie
 
 ### Weaknesses ### 
 
-Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) and [GLTF](https://en.wikipedia.org/wiki/GlTF) is not supported and it is not foreseeable that this functionality will be added to the engine in the near future (!) This means that the import of modern assets (such as models/textures from sketchfab.com) is not straightforward plus even if the import works there is a quality loss. This is a considerable downside.
+Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) and [GLTF](https://en.wikipedia.org/wiki/GlTF) is not supported and it is not foreseeable that this functionality will be added to the engine in the near future. This means that the import of modern assets (such as models/textures from sketchfab.com) is not straightforward plus even if the import works there is a quality loss. The 'advantage' is that without PBR the engine will run on old machines and/or support large maps - plus the file size of the textures are not as big as in AAA games.
 
 ### Methodology  ###
 
