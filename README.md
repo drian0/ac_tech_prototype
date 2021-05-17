@@ -174,6 +174,29 @@ Examples:
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
+To migrate [PBR textures](https://learnopengl.com/PBR/Theory) to conventional textures proceed as follows:
+
+- COLOR + AO -> DIFFUSE
+   - blend the COLOR texture with the AO texture using 'multiply' blending function 
+   - save this diffuse texture as \**color.png*
+   - GIMP: To do this in gimp, open the first texture, paste the second texture as new layer, edit layer attributes and set to mode to "Multiply", flatten image, export to png
+- ROUGHNESS + METALLIC -> SPECULAR MAP
+   - blend the ROUGHNESS texture in such a way with the METALLIC texture so that the dark/black areas of the METALLC texture remain dark
+   - compose the resulting grayscale image into the red channel of a new image, keep the green and blue channels empty/white
+   - save this specular map as \**specular.png*
+   - GIMP: To do this in gimp, open the first texture, paste the second texture as new layer, edit layer attributes and set to mode to "Darken Only", flatten image, export to png
+- NORMAL MAP -> ~NORMAL MAP
+   - Tesseract requires normal maps to have white faces to be down and dark faces to be up in the green channel
+   - If this is not the case yet, simply invert the green channel of the texture 
+   - save the normal map as \**normal.png*
+   - GIMP: To do this in gimp, open the texture, Colors->Components->Decompose, select green layer, Colors->Invert, Colors->Components->Compose, export to png
+ - Model Skins
+   - If you want to apply the texture to a model skin e.g. with the `md3skin` or `md5skin` or `iqmskin` commands then you need to encode the specular map into a mask
+   - The mask is encoded as follows: red channel -> specular map, green channel -> glow map, blue channel -> environment map
+   - GIMP: To do this in gimp, open the specular map (\**specular.png*) then add two additional empty layers, Color->Components-Compose, chose initial layer as 'green', export to png
+ - Examples:
+   - Sniper2 rifle PBR textures migrated to conventional textures: [Source](/media/model/hudgun/sniper2/originalpackage/textures) -> [Target](/media/model/hudgun/sniper2/) 
+
 ### Hudgunmodel Migration ###
 
 <img src="/doc/hudgun.PNG" width="50%" alt="Tech Prototype: ac_complex">
@@ -198,7 +221,8 @@ Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "han
 #### Procedure ####
 
 Example:
-- [Sniper Rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
+- [Sniper rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
+- [Sniper2 rifle iqm config file(/media/model/hudgun/sniper2/iqm.cfg)
 
 Notes:
 - `md3load <model>` loads a given md3 file
