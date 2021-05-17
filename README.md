@@ -174,7 +174,7 @@ Examples:
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
-To migrate [PBR textures](https://learnopengl.com/PBR/Theory) to conventional textures proceed as follows:
+If you download new [PBR textures](https://learnopengl.com/PBR/Theory) from the web you need to convert them first to conventional textures:
 
 - COLOR + AO -> DIFFUSE
    - blend the COLOR texture with the AO texture using 'multiply' blending function 
@@ -222,7 +222,7 @@ Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "han
 
 Example:
 - [Sniper rifle md3 config file](/media/model/hudgun/sniper/md3.cfg)
-- [Sniper2 rifle iqm config file(/media/model/hudgun/sniper2/iqm.cfg)
+- [Sniper2 rifle iqm config file](/media/model/hudgun/sniper2/iqm.cfg)
 
 Notes:
 - `md3load <model>` loads a given md3 file
@@ -290,4 +290,4 @@ numverts 1234*
 
 ### Mapmodel Migration ###
 
-Similar to playermodel migration but without animations.
+TODO.
