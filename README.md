@@ -214,10 +214,6 @@ Optimal:
  - the skins textures could be re-created in high-res
  - animations could be added such as reload select/deselect weapon 
 
-### Worldgunmodel Migration ####
-
-Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "hands".
-
 #### Procedure ####
 
 Example:
@@ -229,6 +225,10 @@ Notes:
 - `md3skin <mesh> <skin> <mask>` applies a diffuse texture *skin* to the *mesh* with a given *mask*. The *mask* is an ordinary RGB picture where the R(ed) channel stores a specular map, the G(reen) channel stores glow map and the B(blue) channel stores environment map.
 - `md3bumpmap <mesh> <normalmap>` applies a *normalmap* to the *mesh*
 - `md3spec <mesh> -1` disables specularity for the given *mesh*. This is a useful shortcut so that you do not need to provide a *mask* with disabled specularity.
+
+### Worldgunmodel Migration ####
+
+Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "hands".
 
 ### Playermodel Migration ###
 
