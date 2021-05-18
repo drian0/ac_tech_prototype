@@ -293,7 +293,7 @@ numverts 1234
   - For example, review the [joints { section](/media/model/player/bones/model.md5mesh?token=ASWVSVZ5RHPQ2VWIMF3MNCDAUNNZY) of the bones player model and take note of the order of the joints, starting at index 0
   - Note the [rdjoint entries](/media/model/player/bones/ragdoll.cfg#L40) in the ragdoll.cfg of the bones playermodel  
   - For exaxmple `rdjoint 5 9 1` references join at index 5 which is "L_thigh" and so if the indexes changes after exporting the model then the ragdoll.cfg needs to be updated accordingly
-  - To migrate textures - especially PBR textures - see section []()
+  - To migrate textures/skins of the model please see section [Texture Migration](#procedure)
 
 ### Mapmodel Migration ###
 
