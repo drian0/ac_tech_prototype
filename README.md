@@ -100,7 +100,7 @@ AC v1 was marketed with the promise to run well on old computers. Most of the co
 
 ### Map Migration ###
 
-<img src="/doc/editmode_800.png" width="50%">
+<img src="/doc/editmode_800.png" width="45%"> <img src="/doc/volumetric_lighting.png" width="45%"> 
 
 #### Guidelines ####
 
@@ -296,4 +296,8 @@ numverts 1234
 
 ### Mapmodel Migration ###
 
-TODO.
+Same applies as in [Weapon Model Migration (HUD)](#Hudgunmodel-Migration) - except "hands".
+
+### Sound Migration ###
+
+Sounds/audio could be reused 100% initially.
