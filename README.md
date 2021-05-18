@@ -232,6 +232,8 @@ Same applies as in [Weapon Model Migration (HUD)](#Hudgunmodel-Migration) - exce
 
 ### Playermodel Migration ###
 
+<img src="/doc/terrorist.png" width="50%">
+
 #### Guidelines ####
 
 Minimal:
