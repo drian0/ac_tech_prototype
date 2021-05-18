@@ -226,9 +226,9 @@ Notes:
 - `md3bumpmap <mesh> <normalmap>` applies a *normalmap* to the *mesh*
 - `md3spec <mesh> -1` disables specularity for the given *mesh*. This is a useful shortcut so that you do not need to provide a *mask* with disabled specularity.
 
-### Worldgunmodel Migration ####
+### Weapon Model Migration (World) ####
 
-Same applies as in [Hudgunmodel-Migration](#Hudgunmodel-Migration) - except "hands".
+Same applies as in [Weapon Model Migration (HUD)](#Hudgunmodel-Migration) - except "hands".
 
 ### Playermodel Migration ###
 
