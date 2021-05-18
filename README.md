@@ -287,6 +287,10 @@ numverts 1234
 - Import the first animation file of the bones player model using the addon (for example: run)
 - Export the animation file using the addon - this ensure that the animation is compatible to the mesh (ordering of joints/etc. matters and so we need to import/export)
   - Do this for all animation files 
+- Update the ragdoll.cfg so that the index of the joints are properly referenced, order matters
+  - For example, review the [joints { section](/media/model/player/bones/model.md5mesh?token=ASWVSVZ5RHPQ2VWIMF3MNCDAUNNZY) of the bones player model and take note of the order of the joints, starting at index 0
+  - Note the [rdjoint entries](/media/model/player/bones/ragdoll.cfg#L40) in the ragdoll.cfg of the bones playermodel  
+  - For exaxmple `rdjoint 5 9 1` references join at index 5 which is "L_thigh" and so if the indexes changes after exporting the model then the ragdoll.cfg needs to be updated accordingly
 
 ### Mapmodel Migration ###
 
