@@ -228,7 +228,7 @@ Notes:
 
 ### Weapon Model Migration (World) ####
 
-Same applies as in [Weapon Model Migration (HUD)](#Hudgunmodel-Migration) - except "hands".
+Same applies as in [Weapon Model Migration (HUD)](#weapon-model-migration-hud) - except "hands".
 
 ### Playermodel Migration ###
 
@@ -297,7 +297,7 @@ numverts 1234
 
 ### Mapmodel Migration ###
 
-Same applies as in [Weapon Model Migration (HUD)](#Hudgunmodel-Migration) - except "hands".
+Same applies as in [Weapon Model Migration (HUD)](#weapon-model-migration-hud) - except "hands".
 
 ### Sound Migration ###
 
