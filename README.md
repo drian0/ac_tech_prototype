@@ -240,7 +240,7 @@ Minimal:
 - The AC v1 playermodels should not be retained. They stem from the Quake II era an d were already outdated when developmen on AC v1 began. 
 - The replacement should have the same style that means special forces vs. rebels.
 - Faces should be covered as in AC v1 - makes it less violent.
-- Use freely available player models if there are any suitable ones. Examples: [terrorist](https://sketchfab.com/3d-models/terrorist-ccce1abd9086451da3bed9ec30c82c37) and [thugs](https://sketchfab.com/3d-models/thugs-ee6139403e5c4840a93c63b66340a781)
+- Use freely available player models if there are any suitable ones. Examples: [terrorist](https://sketchfab.com/3d-models/terrorist-ccce1abd9086451da3bed9ec30c82c37), [thugs](https://sketchfab.com/3d-models/thugs-ee6139403e5c4840a93c63b66340a781) and [SWAT](https://sketchfab.com/3d-models/swat-character-d4235ba6f1ab4322ad262512183fbc6c)
 - Reuse the existing skeletal animation of the Tesseract "bones" playermodel (requires a manual migration)
 
 Optimal:
