@@ -197,7 +197,7 @@ If you download new [PBR textures](https://learnopengl.com/PBR/Theory) from the 
  - Examples:
    - Sniper2 rifle PBR textures migrated to conventional textures: [Source](/media/model/hudgun/sniper2/originalpackage/textures) -> [Target](/media/model/hudgun/sniper2/) 
 
-### Hudgunmodel Migration ###
+### Weapon Model Migration (HUD) ###
 
 <img src="/doc/hudgun.PNG" width="50%" alt="Tech Prototype: ac_complex">
 
