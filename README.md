@@ -75,10 +75,6 @@ This tech prototype contains the following changes compared to vanilla Tesseract
 
 Taking into account a) the capabilities of the new technology b) the capabilities of the development team and c) support of the AC community it is safe to say that renewing the technology stack of AssaultCube with Tesseract is feasible. 
 
-### Weaknesses ### 
-
-Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) and [GLTF](https://en.wikipedia.org/wiki/GlTF) is not supported and it is not foreseeable that this functionality will be added to the engine in the near future. This means that the import of modern assets (such as models/textures from sketchfab.com) is not straightforward plus even if the import works there is a quality loss. The 'advantage' is that without PBR the engine will run on old machines and/or support large maps - plus the file size of the textures are not as big as in AAA games.
-
 ### Methodology  ###
 
 <img src="/doc/movingforward.jpg" width="50%">
@@ -185,7 +181,7 @@ Examples:
 
 See also [texture types](http://sauerbraten.org/docs/editref.html#texture) and [shaders table](http://sauerbraten.org/docs/editref.html#setuniformparam).
 
-If you download new [PBR textures](https://learnopengl.com/PBR/Theory) from the web you need to convert them first to conventional textures:
+Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) and [GLTF](https://en.wikipedia.org/wiki/GlTF) is not supported by Tesseract and it is not foreseeable that this functionality will be added to the engine in the near future. This means that the import of modern assets (such as models/textures from sketchfab.com) is not straightforward plus even if the import works there is a quality loss. The 'advantage' is that without PBR the engine will run on old machines and/or support large maps - plus the file size of the textures are not as big as in AAA games. So, if you download new PBR textures from the web you need to convert them first to conventional textures:
 
 - COLOR + AO -> DIFFUSE
    - blend the COLOR texture with the AO texture using 'multiply' blending function 
