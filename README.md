@@ -98,6 +98,10 @@ AC v1 was marketed with the promise to run well on old computers. Most of the co
 
 ## Asset Migration Path ##
 
+### General ###
+
+This chapter describes how assets from AC v1 could be migrated - or replaced. The description is differentiated into guidelines (what to do) and procedure (how to do).
+
 ### Map Migration ###
 
 <img src="/doc/editmode_800.png" width="45%"> <img src="/doc/volumetric_lighting.png" width="45%"> 
