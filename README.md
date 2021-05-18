@@ -199,7 +199,7 @@ If you download new [PBR textures](https://learnopengl.com/PBR/Theory) from the 
 
 ### Weapon Model Migration (HUD) ###
 
-<img src="/doc/hudgun.PNG" width="50%" alt="Tech Prototype: ac_complex">
+<img src="/doc/hudgun.PNG" width="45%"> <img src="/doc/sniper2.png" width="45%">
 
 #### Guidelines ####
 
@@ -232,7 +232,7 @@ Same applies as in [Weapon Model Migration (HUD)](#Hudgunmodel-Migration) - exce
 
 ### Playermodel Migration ###
 
-<img src="/doc/terrorist.png" width="50%">
+<img src="/doc/terrorist.png" width="45%"> <img src="/doc/swat.png" width="45%">
 
 #### Guidelines ####
 
