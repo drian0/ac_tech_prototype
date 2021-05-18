@@ -282,7 +282,7 @@ numverts 1234
 
 shader "hat1"
 
-numverts 1234*
+numverts 1234
 
 - Import the first animation file of the bones player model using the addon (for example: run)
 - Export the animation file using the addon - this ensure that the animation is compatible to the mesh (ordering of joints/etc. matters and so we need to import/export)
