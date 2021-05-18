@@ -83,9 +83,13 @@ Unfortunately [PBR](https://en.wikipedia.org/wiki/Physically_based_rendering) an
 
 <img src="/doc/movingforward.jpg" width="50%">
 
-The first phase should be about publishing a game (*minimum playable product*) with a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex. This first release should not be a "demo" or a "prototype" but instead it sould be a full release that is meant to be played by people. It is a game of its own and deserves its own name such as "AssaultCube: Sniper Wars", "AC: Sniper Battle" or similar. 
+**First Phase**
+The first phase should be about publishing a game (*minimum playable product*) with a very, very limited scope. This ensures that it get's done and that it creates a sense of achievement which is important for momentum. The scope could include 1 game mode, 1 weapon, 1 player model and 1 map. For example: instagib (OSOK with crosshair), sniper rifle, seaman-terrorist-guy and ac_complex. This first release should not be a "demo" or a "prototype" but instead it sould be a full release that is meant to be played by people. It is a game of its own and deserves its own name such as "AssaultCube: Sniper Wars", "AC: Sniper Battle" or similar. There should be a group of at least one developer, one artist and one tester than can focus solely on this first product without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for this duration.
 
-There should be a group of at least one developer, one artist and one tester than can focus solely on this first product without distraction. Maintenance of AC v1.x and AC mobile should be shouldered by other members of the development team for this duration. The knowledge gathered during this process will then be used to conceptualize and implement AssaultCube II in the second phase.
+The basic assumption about the AC community is that it is more conservative than progressive. This assumption is based on the thought that the more progressive a person is the more likely it is that this person moves on to a newer game. Therefore the remaining people in the AC community may tend toward the conservative/traditional end. In terms of methodology the first phase might serve as a test to see if the community is willing to join the effort to renew AC and embrace the outcome. There is no point in building AssaultCube II if the first phase fails in this regard.
+
+**Second Phase**
+The knowledge gathered during this process will then be used to conceptualize and implement AssaultCube II in the second phase. What AssaultCube II actually constitutes needs to be figured out as part of the first phase.
 
 ### Balancing Innovation and Tradition ###
 
